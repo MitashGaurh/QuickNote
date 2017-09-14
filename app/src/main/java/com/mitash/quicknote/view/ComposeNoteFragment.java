@@ -35,6 +35,7 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
 
         mEditor.init(mBinding.webViewEditor);
 
+        int formatRestId = R.layout.layout_format_bar_richtext;
 
         return mBinding.getRoot();
     }

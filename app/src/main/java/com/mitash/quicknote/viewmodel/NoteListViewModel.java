@@ -6,6 +6,7 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
+import android.databinding.ObservableBoolean;
 
 import com.mitash.quicknote.database.DatabaseCreator;
 import com.mitash.quicknote.database.entity.NoteEntity;

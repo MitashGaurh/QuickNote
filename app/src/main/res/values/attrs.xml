@@ -9,4 +9,9 @@
         </attr>
         <attr name="shimmer_grid_child_count" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="ToggleImageButton">
+        <attr name="checkedDrawable" format="reference" />
+        <attr name="uncheckedDrawable" format="reference" />
+    </declare-styleable>
 </resources>
