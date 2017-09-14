@@ -16,6 +16,7 @@
 
 package com.mitash.quicknote.database;
 
+import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.persistence.room.Room;
@@ -46,15 +47,19 @@ public class DatabaseCreator {
     // For Singleton instantiation
     private static final Object LOCK = new Object();
 
-    public synchronized static DatabaseCreator getInstance() {
+    public synchronized static DatabaseCreator getInstance(Application application) {
         if (sInstance == null) {
             synchronized (LOCK) {
                 if (sInstance == null) {
-                    sInstance = new DatabaseCreator();
+                    sInstance = new DatabaseCreator(application);
                 }
             }
         }
         return sInstance;
+    }
+
+    public DatabaseCreator(Application application) {
+        createDb(application);
     }
 
     /**
@@ -74,7 +79,7 @@ public class DatabaseCreator {
      * <p>
      * Although this uses an AsyncTask which currently uses a serial executor, it's thread-safe.
      */
-    public void createDb(Context context) {
+    private void createDb(Context context) {
 
         Log.d("DatabaseCreator", "Creating DB from " + Thread.currentThread().getName());
 

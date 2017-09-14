@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="android.view.View"/>
+
         <variable
             name="isLoading"
             type="boolean" />
@@ -11,6 +13,11 @@
         <variable
             name="isDataAvailable"
             type="boolean" />
+
+        <variable
+            name="viewmodel"
+            type="com.mitash.quicknote.viewmodel.NoteListViewModel" />
+
     </data>
 
     <RelativeLayout
@@ -31,7 +38,8 @@
             android:layout_margin="10dp"
             android:text="@string/text_create_note"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:visibleGone="@{!isDataAvailable}" />
+            app:visibleGone="@{!isDataAvailable}"
+            android:onClick="@{() -> viewmodel.showNewNotesTask()}"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_add_note"
@@ -41,7 +49,8 @@
             android:layout_alignParentEnd="true"
             android:layout_margin="@dimen/fab_margin"
             app:fabSize="normal"
-            app:srcCompat="@drawable/ic_add" />
+            app:srcCompat="@drawable/ic_add"
+            android:onClick="@{() -> viewmodel.showNewNotesTask()}"/>
 
     </RelativeLayout>
 </layout>

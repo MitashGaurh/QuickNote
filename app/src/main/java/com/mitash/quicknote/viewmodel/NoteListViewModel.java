@@ -6,10 +6,11 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
-import android.databinding.ObservableBoolean;
+import android.view.View;
 
 import com.mitash.quicknote.database.DatabaseCreator;
 import com.mitash.quicknote.database.entity.NoteEntity;
+import com.mitash.quicknote.events.SingleLiveEvent;
 
 import java.util.List;
 
@@ -21,21 +22,28 @@ public class NoteListViewModel extends AndroidViewModel {
 
     private static final MutableLiveData ABSENT = new MutableLiveData();
 
+    private final SingleLiveEvent<Void> mNewNotesEvent = new SingleLiveEvent<>();
+
+    private final DatabaseCreator dbCreator;
+
     static {
         //noinspection unchecked
         ABSENT.setValue(null);
     }
 
-    private final LiveData<List<NoteEntity>> mObservableNotes;
+    private LiveData<List<NoteEntity>> mObservableNotes;
 
     public NoteListViewModel(Application application) {
         super(application);
+        dbCreator = DatabaseCreator.getInstance(this.getApplication());
+    }
 
-        final DatabaseCreator databaseCreator = DatabaseCreator.getInstance();
+    public void attach() {
+        mObservableNotes = subscribeNotesListObservable();
+    }
 
-        LiveData<Boolean> databaseCreated = databaseCreator.isDatabaseCreated();
-
-        mObservableNotes = Transformations.switchMap(databaseCreated,
+    private LiveData<List<NoteEntity>> subscribeNotesListObservable() {
+        return Transformations.switchMap(dbCreator.isDatabaseCreated(),
                 new Function<Boolean, LiveData<List<NoteEntity>>>() {
                     @Override
                     public LiveData<List<NoteEntity>> apply(Boolean isDbCreated) {
@@ -44,12 +52,10 @@ public class NoteListViewModel extends AndroidViewModel {
                             return ABSENT;
                         } else {
                             //noinspection ConstantConditions
-                            return databaseCreator.getDatabase().noteDao().loadAllNotes();
+                            return dbCreator.getDatabase().noteDao().loadAllNotes();
                         }
                     }
                 });
-
-        databaseCreator.createDb(this.getApplication());
     }
 
     /**
@@ -57,5 +63,13 @@ public class NoteListViewModel extends AndroidViewModel {
      */
     public LiveData<List<NoteEntity>> loadNotes() {
         return mObservableNotes;
+    }
+
+    public SingleLiveEvent<Void> getNewNotesEvent() {
+        return mNewNotesEvent;
+    }
+
+    public void showNewNotesTask() {
+        mNewNotesEvent.call();
     }
 }
