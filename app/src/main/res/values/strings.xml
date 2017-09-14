@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">QuickNote</string>
+    <string name="title_activity_note_list">NoteListActivity</string>
+
+    <string name="title_activity_compose_note">ComposeNoteActivity</string>
+    <string name="text_create_note">Create a note. Tap on + button.</string>
+    <string name="text_notes">Notes</string>
+</resources>
