@@ -15,11 +15,12 @@ import android.view.ViewGroup;
 import com.mitash.quicknote.R;
 import com.mitash.quicknote.database.entity.NoteEntity;
 import com.mitash.quicknote.databinding.FragmentNoteListBinding;
+import com.mitash.quicknote.viewmodel.ViewModelFactory;
 import com.mitash.quicknote.viewmodel.NoteListViewModel;
 
 import java.util.List;
 
-public class NoteListFragment extends LifecycleFragment implements View.OnClickListener {
+public class NoteListFragment extends LifecycleFragment {
 
     private static final String TAG = "NoteListFragment";
 
@@ -42,16 +43,24 @@ public class NoteListFragment extends LifecycleFragment implements View.OnClickL
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        mNoteListViewModel.attach();
+        subscribeView();
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mNoteListViewModel = ViewModelProviders.of(this).get(NoteListViewModel.class);
+        // Use a Factory to inject dependencies into the ViewModel
+        ViewModelFactory factory = ViewModelFactory.getInstance(getActivity().getApplication());
+
+        mNoteListViewModel = ViewModelProviders.of(this, factory).get(NoteListViewModel.class);
+
         mBinding.setIsLoading(true);
         mBinding.setIsDataAvailable(true);
-
-        mBinding.fabAddNote.setOnClickListener(this);
-
-        subscribeView();
     }
 
     private void subscribeView() {
@@ -67,10 +76,17 @@ public class NoteListFragment extends LifecycleFragment implements View.OnClickL
                 }
             }
         });
+
+        // Subscribe to "new notes" event
+        mNoteListViewModel.getNewNotesEvent().observe(this, new Observer<Void>() {
+            @Override
+            public void onChanged(@Nullable Void _) {
+                onFabButtonClicked();
+            }
+        });
     }
 
-    @Override
-    public void onClick(View v) {
+    public void onFabButtonClicked() {
         Intent intent = new Intent(getActivity(), ComposeNoteActivity.class);
         startActivity(intent);
     }
