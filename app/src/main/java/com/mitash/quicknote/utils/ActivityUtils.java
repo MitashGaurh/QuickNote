@@ -16,10 +16,16 @@
 
 package com.mitash.quicknote.utils;
 
+import android.app.Application;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.annotation.NonNull;
+
+import com.mitash.quicknote.viewmodel.NoteListViewModel;
+import com.mitash.quicknote.viewmodel.ViewModelFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -52,6 +58,13 @@ public class ActivityUtils {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(nonUIFragment, fragmentTag);
         transaction.commit();
+    }
+
+    //helps to obtain viewmodel at any fragment by simply passing T class type and Fragment instanced
+    public static <T extends ViewModel> T obtainViewModel(Application application, Fragment fragment, Class<NoteListViewModel> type) {
+        // Use a Factory to inject dependencies into the ViewModel
+        ViewModelFactory factory = ViewModelFactory.getInstance(application);
+        return (T)ViewModelProviders.of(fragment, factory).get(type);
     }
 
 
