@@ -1,5 +1,6 @@
 package com.mitash.quicknote.view;
 
+import android.app.Application;
 import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import com.mitash.quicknote.R;
 import com.mitash.quicknote.database.entity.NoteEntity;
 import com.mitash.quicknote.databinding.FragmentNoteListBinding;
+import com.mitash.quicknote.utils.ActivityUtils;
 import com.mitash.quicknote.viewmodel.ViewModelFactory;
 import com.mitash.quicknote.viewmodel.NoteListViewModel;
 
@@ -35,7 +37,11 @@ public class NoteListFragment extends LifecycleFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_note_list, container, false);
+        mBinding = FragmentNoteListBinding.inflate(inflater, container, false);
+
+        mNoteListViewModel = ActivityUtils.obtainViewModel(this.getActivity().getApplication(), this, NoteListViewModel.class);
+
+        mBinding.setViewmodel(mNoteListViewModel);
 
         mBinding.rvNote.setLayoutReference(R.layout.layout_note_list_shimmer);
 
@@ -45,7 +51,6 @@ public class NoteListFragment extends LifecycleFragment {
     @Override
     public void onResume() {
         super.onResume();
-
         mNoteListViewModel.attach();
         subscribeView();
     }
@@ -53,11 +58,6 @@ public class NoteListFragment extends LifecycleFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        // Use a Factory to inject dependencies into the ViewModel
-        ViewModelFactory factory = ViewModelFactory.getInstance(getActivity().getApplication());
-
-        mNoteListViewModel = ViewModelProviders.of(this, factory).get(NoteListViewModel.class);
 
         mBinding.setIsLoading(true);
         mBinding.setIsDataAvailable(true);
