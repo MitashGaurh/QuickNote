@@ -6,7 +6,6 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
-import android.view.View;
 
 import com.mitash.quicknote.database.DatabaseCreator;
 import com.mitash.quicknote.database.entity.NoteEntity;
@@ -22,9 +21,9 @@ public class NoteListViewModel extends AndroidViewModel {
 
     private static final MutableLiveData ABSENT = new MutableLiveData();
 
-    private final SingleLiveEvent<Void> mNewNotesEvent = new SingleLiveEvent<>();
+    private final SingleLiveEvent<Void> mNewNoteEvent = new SingleLiveEvent<>();
 
-    private final DatabaseCreator dbCreator;
+    private final DatabaseCreator mDbCreator;
 
     static {
         //noinspection unchecked
@@ -35,7 +34,7 @@ public class NoteListViewModel extends AndroidViewModel {
 
     public NoteListViewModel(Application application) {
         super(application);
-        dbCreator = DatabaseCreator.getInstance(this.getApplication());
+        mDbCreator = DatabaseCreator.getInstance(this.getApplication());
     }
 
     public void attach() {
@@ -43,7 +42,7 @@ public class NoteListViewModel extends AndroidViewModel {
     }
 
     private LiveData<List<NoteEntity>> subscribeNotesListObservable() {
-        return Transformations.switchMap(dbCreator.isDatabaseCreated(),
+        return Transformations.switchMap(mDbCreator.isDatabaseCreated(),
                 new Function<Boolean, LiveData<List<NoteEntity>>>() {
                     @Override
                     public LiveData<List<NoteEntity>> apply(Boolean isDbCreated) {
@@ -52,7 +51,7 @@ public class NoteListViewModel extends AndroidViewModel {
                             return ABSENT;
                         } else {
                             //noinspection ConstantConditions
-                            return dbCreator.getDatabase().noteDao().loadAllNotes();
+                            return mDbCreator.getDatabase().noteDao().loadAllNotes();
                         }
                     }
                 });
@@ -65,11 +64,11 @@ public class NoteListViewModel extends AndroidViewModel {
         return mObservableNotes;
     }
 
-    public SingleLiveEvent<Void> getNewNotesEvent() {
-        return mNewNotesEvent;
+    public SingleLiveEvent<Void> getNewNoteEvent() {
+        return mNewNoteEvent;
     }
 
-    public void showNewNotesTask() {
-        mNewNotesEvent.call();
+    public void addNewNote(){
+        mNewNoteEvent.call();
     }
 }

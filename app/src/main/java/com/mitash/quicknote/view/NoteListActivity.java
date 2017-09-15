@@ -1,22 +1,19 @@
 package com.mitash.quicknote.view;
 
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.mitash.quicknote.LifeCycleAppCompatActivity;
 import com.mitash.quicknote.R;
-import com.mitash.quicknote.events.LifecycleAppCompatActivity;
 import com.mitash.quicknote.utils.ActivityUtils;
 import com.mitash.quicknote.viewmodel.NoteListViewModel;
-import com.mitash.quicknote.viewmodel.ViewModelFactory;
 
-public class NoteListActivity extends LifecycleAppCompatActivity {
+public class NoteListActivity extends LifeCycleAppCompatActivity {
 
-    //private NoteListViewModel mViewModel = null;
+    private NoteListViewModel mNoteListViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,24 +32,20 @@ public class NoteListActivity extends LifecycleAppCompatActivity {
                     , R.id.frame_container);
         }
 
-//        mViewModel = obtainViewModel(this);
-//        // Subscribe to "new notes" event
-//        mViewModel.getNewNotesEvent().observe(this, new Observer<Void>() {
-//            @Override
-//            public void onChanged(@Nullable Void _) {
-//                //onFabButtonClicked();
-//            }
-//        });
+        mNoteListViewModel = ActivityUtils.obtainViewModel(this, NoteListViewModel.class);
 
+        // Subscribe to "new note" event
+        mNoteListViewModel.getNewNoteEvent().observe(this, new Observer<Void>() {
+            @Override
+            public void onChanged(@Nullable Void aVoid) {
+                addNewNote();
+            }
+        });
     }
 
-//    public static NoteListViewModel obtainViewModel(FragmentActivity activity) {
-//        // Use a Factory to inject dependencies into the ViewModel
-//        ViewModelFactory factory = ViewModelFactory.getInstance(activity.getApplication());
-//
-//        NoteListViewModel viewModel =
-//                ViewModelProviders.of(activity, factory).get(NoteListViewModel.class);
-//
-//        return viewModel;
-//    }
+
+    public void addNewNote() {
+        Intent intent = new Intent(this, ComposeNoteActivity.class);
+        startActivity(intent);
+    }
 }

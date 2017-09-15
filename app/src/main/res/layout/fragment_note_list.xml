@@ -38,8 +38,7 @@
             android:layout_margin="10dp"
             android:text="@string/text_create_note"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            app:visibleGone="@{!isDataAvailable}"
-            android:onClick="@{() -> viewmodel.showNewNotesTask()}"/>
+            app:visibleGone="@{!isDataAvailable}" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_add_note"
@@ -50,7 +49,7 @@
             android:layout_margin="@dimen/fab_margin"
             app:fabSize="normal"
             app:srcCompat="@drawable/ic_add"
-            android:onClick="@{() -> viewmodel.showNewNotesTask()}"/>
+            android:onClick="@{() ->  viewmodel.addNewNote()}"/>
 
     </RelativeLayout>
 </layout>

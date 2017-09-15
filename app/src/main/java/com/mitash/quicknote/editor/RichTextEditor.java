@@ -110,7 +110,7 @@ public class RichTextEditor extends Editor implements TinnyMceCallback.TinnyMceL
     }
 
     @Override
-    public void toggleUnorderList() {
+    public void toggleUnOrderList() {
         execJs("toggleBulletList();");
     }
 
@@ -127,11 +127,6 @@ public class RichTextEditor extends Editor implements TinnyMceCallback.TinnyMceL
     @Override
     public void toggleQuote() {
         execJs("toggleBlockquote();");
-    }
-
-    @Override
-    public void toggleHeading() {
-        execJs("toggleHeader();");
     }
 
     @Override

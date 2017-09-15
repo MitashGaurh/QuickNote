@@ -102,7 +102,7 @@ public class MarkdownEditor extends Editor {
     }
 
     @Override
-    public void toggleUnorderList() {
+    public void toggleUnOrderList() {
         execJs("ZSSEditor.setUnorderedList();");
     }
 
@@ -119,10 +119,5 @@ public class MarkdownEditor extends Editor {
     @Override
     public void toggleQuote() {
         execJs("ZSSEditor.setBlockquote();");
-    }
-
-    @Override
-    public void toggleHeading() {
-        execJs("ZSSEditor.setHeading();");
     }
 }

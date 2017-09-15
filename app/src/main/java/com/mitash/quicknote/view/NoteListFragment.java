@@ -1,11 +1,7 @@
 package com.mitash.quicknote.view;
 
-import android.app.Application;
 import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -17,12 +13,11 @@ import com.mitash.quicknote.R;
 import com.mitash.quicknote.database.entity.NoteEntity;
 import com.mitash.quicknote.databinding.FragmentNoteListBinding;
 import com.mitash.quicknote.utils.ActivityUtils;
-import com.mitash.quicknote.viewmodel.ViewModelFactory;
 import com.mitash.quicknote.viewmodel.NoteListViewModel;
 
 import java.util.List;
 
-public class NoteListFragment extends LifecycleFragment {
+public class NoteListFragment extends LifecycleFragment implements View.OnClickListener {
 
     private static final String TAG = "NoteListFragment";
 
@@ -39,28 +34,28 @@ public class NoteListFragment extends LifecycleFragment {
                              Bundle savedInstanceState) {
         mBinding = FragmentNoteListBinding.inflate(inflater, container, false);
 
-        mNoteListViewModel = ActivityUtils.obtainViewModel(this.getActivity().getApplication(), this, NoteListViewModel.class);
+        mNoteListViewModel = ActivityUtils.obtainViewModel(getActivity(), NoteListViewModel.class);
+
+        mNoteListViewModel.attach();
 
         mBinding.setViewmodel(mNoteListViewModel);
 
-        mBinding.rvNote.setLayoutReference(R.layout.layout_note_list_shimmer);
-
         return mBinding.getRoot();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mNoteListViewModel.attach();
-        subscribeView();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mBinding.rvNote.setLayoutReference(R.layout.layout_note_list_shimmer);
+
         mBinding.setIsLoading(true);
+
         mBinding.setIsDataAvailable(true);
+
+        mBinding.fabAddNote.setOnClickListener(this);
+
+        subscribeView();
     }
 
     private void subscribeView() {
@@ -69,25 +64,18 @@ public class NoteListFragment extends LifecycleFragment {
             @Override
             public void onChanged(@Nullable List<NoteEntity> notes) {
                 mBinding.setIsLoading(false);
-                if (null != notes) {
+                if (null != notes && !notes.isEmpty()) {
                     Log.d(TAG, "onChanged: count " + notes.size());
+                    mBinding.setIsDataAvailable(true);
                 } else {
                     mBinding.setIsDataAvailable(false);
                 }
             }
         });
-
-        // Subscribe to "new notes" event
-        mNoteListViewModel.getNewNotesEvent().observe(this, new Observer<Void>() {
-            @Override
-            public void onChanged(@Nullable Void _) {
-                onFabButtonClicked();
-            }
-        });
     }
 
-    public void onFabButtonClicked() {
-        Intent intent = new Intent(getActivity(), ComposeNoteActivity.class);
-        startActivity(intent);
+    @Override
+    public void onClick(View v) {
+        mNoteListViewModel.addNewNote();
     }
 }

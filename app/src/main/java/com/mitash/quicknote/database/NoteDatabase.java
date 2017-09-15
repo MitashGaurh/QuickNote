@@ -1,11 +1,10 @@
 package com.mitash.quicknote.database;
 
-import android.arch.persistence.db.SupportSQLiteOpenHelper;
 import android.arch.persistence.room.Database;
-import android.arch.persistence.room.DatabaseConfiguration;
-import android.arch.persistence.room.InvalidationTracker;
+import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
+import android.content.Context;
 
 import com.mitash.quicknote.database.converter.DateConverter;
 import com.mitash.quicknote.database.dao.NoteDao;
@@ -20,6 +19,21 @@ import com.mitash.quicknote.database.entity.NoteEntity;
 public abstract class NoteDatabase extends RoomDatabase {
 
     static final String DATABASE_NAME = "quick-note-db";
+
+    private static NoteDatabase INSTANCE;
+
+    public static NoteDatabase getAppDatabase(Context context) {
+        if (INSTANCE == null) {
+            INSTANCE = Room.databaseBuilder(
+                    context.getApplicationContext()
+                    , NoteDatabase.class, DATABASE_NAME).build();
+        }
+        return INSTANCE;
+    }
+
+    public static void destroyInstance() {
+        INSTANCE = null;
+    }
 
     public abstract NoteDao noteDao();
 }

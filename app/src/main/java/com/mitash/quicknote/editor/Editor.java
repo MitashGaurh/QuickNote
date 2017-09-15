@@ -24,7 +24,6 @@ public abstract class Editor {
         BULLET_LIST,
         ORDERED_LIST,
         BLOCK_QUOTE,
-        HEADER,
         LINK
     }
 
@@ -58,15 +57,13 @@ public abstract class Editor {
 
     public abstract void toggleOrderList();
 
-    public abstract void toggleUnorderList();
+    public abstract void toggleUnOrderList();
 
     public abstract void toggleBold();
 
     public abstract void toggleItalic();
 
     public abstract void toggleQuote();
-
-    public abstract void toggleHeading();
 
     public void removeLink() {
     }

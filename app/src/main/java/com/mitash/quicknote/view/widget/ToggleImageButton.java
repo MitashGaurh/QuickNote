@@ -29,11 +29,11 @@ public class ToggleImageButton extends AppCompatImageView implements Checkable {
     public void setChecked(boolean checked) {
         mIsChecked = checked;
         if (mIsChecked) {
-            if (mCheckedDrawable != null) {
+            if (null != mCheckedDrawable) {
                 setImageDrawable(mCheckedDrawable);
             }
         } else {
-            if (mUncheckedDrawable != null) {
+            if (null != mUncheckedDrawable) {
                 setImageDrawable(mUncheckedDrawable);
             }
         }

@@ -11,7 +11,18 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
     buildTypes {
         release {
             minifyEnabled false

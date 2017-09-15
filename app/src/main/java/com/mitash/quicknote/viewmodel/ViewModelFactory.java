@@ -66,6 +66,9 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
         if (modelClass.isAssignableFrom(NoteListViewModel.class)) {
             //noinspection unchecked
             return (T) new NoteListViewModel(mApplication);
+        } else if (modelClass.isAssignableFrom(ComposeNoteViewModel.class)){
+            //noinspection unchecked
+            return (T) new ComposeNoteViewModel(mApplication);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

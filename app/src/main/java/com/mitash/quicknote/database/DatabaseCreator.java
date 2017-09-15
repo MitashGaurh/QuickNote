@@ -19,7 +19,6 @@ package com.mitash.quicknote.database;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
@@ -58,7 +57,7 @@ public class DatabaseCreator {
         return sInstance;
     }
 
-    public DatabaseCreator(Application application) {
+    private DatabaseCreator(Application application) {
         createDb(application);
     }
 
@@ -81,7 +80,7 @@ public class DatabaseCreator {
      */
     private void createDb(Context context) {
 
-        Log.d("DatabaseCreator", "Creating DB from " + Thread.currentThread().getName());
+        Log.d(TAG, "Creating DB from " + Thread.currentThread().getName());
 
         if (!mInitializing.compareAndSet(true, false)) {
             return; // Already initializing
@@ -100,8 +99,7 @@ public class DatabaseCreator {
                 context.deleteDatabase(DATABASE_NAME);
 
                 // Build the database!
-                NoteDatabase database = Room.databaseBuilder(context.getApplicationContext(),
-                        NoteDatabase.class, DATABASE_NAME).build();
+                NoteDatabase database = NoteDatabase.getAppDatabase(context);
 
                 // Add a delay to simulate a long-running operation
                 addDelay();

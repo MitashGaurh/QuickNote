@@ -88,8 +88,6 @@ public class TinnyMceCallback {
                 return Editor.Format.ORDERED_LIST;
             case "blockquote":
                 return Editor.Format.BLOCK_QUOTE;
-            case "header":
-                return Editor.Format.HEADER;
             case "link":
                 return Editor.Format.LINK;
             default:

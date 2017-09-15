@@ -5,4 +5,8 @@
     <string name="title_activity_compose_note">ComposeNoteActivity</string>
     <string name="text_create_note">Create a note. Tap on + button.</string>
     <string name="text_notes">Notes</string>
+    <string name="text_clear">Clear</string>
+    <string name="text_apply">Apply</string>
+
+    <string name="text_multiple_links">Multiple links</string>
 </resources>

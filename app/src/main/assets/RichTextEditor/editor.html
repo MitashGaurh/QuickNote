@@ -7,13 +7,19 @@
     <script src="./tinymce/tinymce.min.js"></script>
     <script src="./jquery-3.1.1.min.js"></script>
     <link rel="stylesheet" type="text/css" href="./style.css">
+    <style>
+         .mce-content-body p{
+            margin: 0 !important;
+			padding: 0 !important;
+        }
+    </style>
 </head>
 
 <body>
-    <div id="title" style="outline: 0px solid transparent;" class="without-border field" placeholderText="Title" contenteditable="true"></div>
-    <div contenteditable=false id=separatorDiv><hr></div>
-    <div id="content" class="field" placeholderText="Title" contenteditable="true"></div>
-    <p id="dummyP" style="display:none;"></p>
+<div id="title" style="outline: 0px solid transparent;" class="without-border field" placeholderText="Title" contenteditable="true"></div>
+<div contenteditable=false id=separatorDiv><hr></div>
+<div id="content" class="field" placeholderText="Content"></div>
+<p id="dummyP" style="display:none;"></p>
 </body>
 
 <script type="text/javascript">
@@ -38,8 +44,8 @@
         lang = ms[1].toLowerCase();
     }
     if (lang.indexOf('zh') >= 0) {
-        $('#title').attr('placeholderText', 'Title')
-        $('#content').attr('placeholderText', 'Write note...')
+        $('#title').attr('placeholderText', '标题')
+        $('#content').attr('placeholderText', '内容')
     }
 
     var titleDiv = document.getElementById('title');
