@@ -3,8 +3,8 @@
 
     <data>
         <variable
-            name="isEditingEnabled"
-            type="boolean" />
+            name="viewModel"
+            type="com.mitash.quicknote.viewmodel.ComposeNoteViewModel"/>
     </data>
 
     <RelativeLayout
@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            app:visibleGone="@{isEditingEnabled}" />
+            app:visibleGone="@{viewModel.mEditingEnabled}" />
 
         <WebView
             android:id="@+id/web_view_editor"

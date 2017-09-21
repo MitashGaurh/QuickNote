@@ -112,6 +112,11 @@ public class MarkdownEditor extends Editor {
     }
 
     @Override
+    public void toggleStrikeThrough() {
+
+    }
+
+    @Override
     public void toggleItalic() {
         execJs("ZSSEditor.setItalic();");
     }

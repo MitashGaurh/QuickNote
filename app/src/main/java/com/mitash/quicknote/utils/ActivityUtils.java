@@ -68,6 +68,7 @@ public class ActivityUtils {
     public static <T extends ViewModel> T obtainViewModel(FragmentActivity activity, Class<T> type) {
         // Use a Factory to inject dependencies into the ViewModel
         ViewModelFactory factory = ViewModelFactory.getInstance(activity.getApplication());
+
         return ViewModelProviders.of(activity, factory).get(type);
     }
 

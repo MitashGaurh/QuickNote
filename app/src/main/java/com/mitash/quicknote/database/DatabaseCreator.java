@@ -95,9 +95,6 @@ public class DatabaseCreator {
 
                 Context context = params[0].getApplicationContext();
 
-                // Reset the database to have new data on every run.
-                context.deleteDatabase(DATABASE_NAME);
-
                 // Build the database!
                 NoteDatabase database = NoteDatabase.getAppDatabase(context);
 

@@ -36,6 +36,12 @@
                 app:uncheckedDrawable="@drawable/ic_format_italic_white" />
 
             <com.mitash.quicknote.view.widget.ToggleImageButton
+                android:id="@+id/btn_strike_through"
+                style="@style/ComposeTheme.FormatButton"
+                app:checkedDrawable="@drawable/ic_strike_through_blue"
+                app:uncheckedDrawable="@drawable/ic_strike_through_white" />
+
+            <com.mitash.quicknote.view.widget.ToggleImageButton
                 android:id="@+id/btn_quote"
                 style="@style/ComposeTheme.FormatButton"
                 app:checkedDrawable="@drawable/ic_format_quote_blue"

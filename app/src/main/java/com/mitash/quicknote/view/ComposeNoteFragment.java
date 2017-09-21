@@ -1,29 +1,27 @@
 package com.mitash.quicknote.view;
 
 
-import android.animation.ObjectAnimator;
 import android.arch.lifecycle.LifecycleFragment;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.GravityCompat;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 
 import com.mitash.quicknote.R;
 import com.mitash.quicknote.databinding.FragmentComposeNoteBinding;
 import com.mitash.quicknote.databinding.LayoutFormatBarRichTextBinding;
 import com.mitash.quicknote.editor.Editor;
 import com.mitash.quicknote.editor.RichTextEditor;
+import com.mitash.quicknote.utils.ActivityUtils;
+import com.mitash.quicknote.utils.DialogUtils;
+import com.mitash.quicknote.viewmodel.ComposeNoteViewModel;
 
 import java.util.Map;
 
@@ -39,28 +37,38 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
 
     private LayoutFormatBarRichTextBinding mFormatBarBinding;
 
+    private ComposeNoteViewModel mComposeNoteViewModel;
+
     public static ComposeNoteFragment newInstance() {
         return new ComposeNoteFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_compose_note, container, false);
+        mBinding = FragmentComposeNoteBinding.inflate(inflater, container, false);
+
+        mComposeNoteViewModel = ActivityUtils.obtainViewModel(getActivity(), ComposeNoteViewModel.class);
 
         mEditor = new RichTextEditor(this);
 
         mEditor.init(mBinding.webViewEditor);
 
-        int formatRestId = R.layout.layout_format_bar_rich_text;
-
-        mFormatBarBinding = DataBindingUtil.inflate(inflater, formatRestId, mBinding.editorBarContainer, false);
+        mFormatBarBinding = LayoutFormatBarRichTextBinding.inflate(inflater, mBinding.editorBarContainer, false);
 
         mBinding.editorBarContainer.addView(mFormatBarBinding.getRoot(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
                 , ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        mBinding.setIsEditingEnabled(true);
+        mBinding.setViewModel(mComposeNoteViewModel);
+
+        mComposeNoteViewModel.mEditingEnabled.set(true);
 
         return mBinding.getRoot();
     }
@@ -72,6 +80,25 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
         for (int i = 0; i < mFormatBarBinding.layoutFormatButtons.getChildCount(); i++) {
             mFormatBarBinding.layoutFormatButtons.getChildAt(i).setOnClickListener(this);
         }
+
+        mFormatBarBinding.btnLink.setTag("");
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_compose, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.menu_save:
+                mComposeNoteViewModel.callSaveEvent();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -104,6 +131,9 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
                     case BULLET_LIST:
                         mFormatBarBinding.btnUnOrderList.setChecked(enabled);
                         break;
+                    case STRIKE_THROUGH:
+                        mFormatBarBinding.btnStrikeThrough.setChecked(enabled);
+                        break;
                 }
             }
         });
@@ -134,6 +164,7 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
 
                 mFormatBarBinding.btnQuote.setChecked(false);
                 mFormatBarBinding.btnLink.setChecked(false);
+                mFormatBarBinding.btnStrikeThrough.setChecked(false);
 
                 refreshFormatStatus(enabledFormats);
             }
@@ -157,6 +188,16 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
         Log.d(TAG, "onClickedImage: ");
     }
 
+    @Override
+    public void onTitleChanged(String title) {
+        mComposeNoteViewModel.mNoteTitle.set(title);
+    }
+
+    @Override
+    public void onContentChanged(String content) {
+        mComposeNoteViewModel.mNoteContent.set(content);
+    }
+
     private void refreshFormatStatus(Map<Editor.Format, Object> formatStatus) {
         Log.d(TAG, "refreshFormatStatus: ");
         for (Map.Entry<Editor.Format, Object> entry : formatStatus.entrySet()) {
@@ -175,6 +216,9 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
                     break;
                 case BLOCK_QUOTE:
                     mFormatBarBinding.btnQuote.setChecked((Boolean) entry.getValue());
+                    break;
+                case STRIKE_THROUGH:
+                    mFormatBarBinding.btnStrikeThrough.setChecked((Boolean) entry.getValue());
                     break;
                 case LINK:
                     Object linkValue = entry.getValue();
@@ -213,6 +257,11 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
                 mEditor.toggleUnOrderList();
                 break;
 
+            case R.id.btn_strike_through:
+                mFormatBarBinding.btnStrikeThrough.toggle();
+                mEditor.toggleStrikeThrough();
+                break;
+
             case R.id.btn_undo:
                 mEditor.undo();
                 break;
@@ -224,65 +273,10 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
             case R.id.btn_link:
                 mFormatBarBinding.btnLink.toggle();
                 if (mFormatBarBinding.btnLink.isChecked()) {
-                    showEditLinkPanel(mFormatBarBinding.btnLink);
+                    DialogUtils.showEditLinkPanel(mFormatBarBinding.btnLink, mEditor);
                 }
         }
     }
 
-    private void showEditLinkPanel(View anchorView) {
-        View contentView = LayoutInflater.from(anchorView.getContext()).inflate(R.layout.layout_link_popup, null);
-        contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        final EditText linkEt = (EditText) contentView.findViewById(R.id.et_link);
-        TextView multipleLinksTv = (TextView) contentView.findViewById(R.id.tv_multiple_links);
-        TextView confirmTv = (TextView) contentView.findViewById(R.id.tv_confirm);
-        TextView clearTv = (TextView) contentView.findViewById(R.id.tv_clear);
-        final PopupWindow popupWindow = new PopupWindow(contentView);
-        popupWindow.setFocusable(true);
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
-        popupWindow.setWidth(WindowManager.LayoutParams.MATCH_PARENT);
-        popupWindow.setAnimationStyle(R.style.ComposeTheme_PopUpAnimation);
 
-        if (mFormatBarBinding.btnLink.isChecked()) {
-            Object status = mFormatBarBinding.btnLink.getTag();
-            if (null == status) {
-                return;
-            }
-            boolean canEdit = status instanceof String;
-            linkEt.setVisibility(canEdit ? View.VISIBLE : View.GONE);
-            confirmTv.setVisibility(canEdit ? View.VISIBLE : View.GONE);
-            multipleLinksTv.setVisibility(canEdit ? View.GONE : View.VISIBLE);
-            if (canEdit) {
-                linkEt.setText((String) mFormatBarBinding.btnLink.getTag());
-                linkEt.setSelection(linkEt.getText().length());
-            }
-        }
-        confirmTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-                mEditor.updateLink("", linkEt.getText().toString());
-            }
-        });
-        clearTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-                mEditor.removeLink();
-            }
-        });
-
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                mFormatBarBinding.btnLink.setChecked(false);
-            }
-        });
-
-        int[] tempLocation = new int[2];
-        anchorView.getLocationOnScreen(tempLocation);
-        int measure = contentView.getMeasuredHeight();
-        int offsetY = tempLocation[1] - measure;
-        popupWindow.showAtLocation(anchorView, Gravity.TOP | GravityCompat.START, 0, offsetY);
-    }
 }

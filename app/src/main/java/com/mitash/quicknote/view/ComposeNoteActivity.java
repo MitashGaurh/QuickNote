@@ -1,16 +1,21 @@
 package com.mitash.quicknote.view;
 
+import android.arch.lifecycle.Observer;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.mitash.quicknote.LifeCycleAppCompatActivity;
 import com.mitash.quicknote.R;
 import com.mitash.quicknote.utils.ActivityUtils;
+import com.mitash.quicknote.viewmodel.ComposeNoteViewModel;
 
-public class ComposeNoteActivity extends AppCompatActivity {
+public class ComposeNoteActivity extends LifeCycleAppCompatActivity {
+
+    private ComposeNoteViewModel mComposeNoteViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +39,16 @@ public class ComposeNoteActivity extends AppCompatActivity {
                     , composeNoteFragment
                     , R.id.frame_container);
         }
-    }
 
+        mComposeNoteViewModel = ActivityUtils.obtainViewModel(this, ComposeNoteViewModel.class);
+
+        // Subscribe to "save note" event
+        mComposeNoteViewModel.getSaveNoteEvent().observe(this, new Observer<Void>() {
+            @Override
+            public void onChanged(@Nullable Void aVoid) {
+                mComposeNoteViewModel.saveNote();
+                finish();
+            }
+        });
+    }
 }

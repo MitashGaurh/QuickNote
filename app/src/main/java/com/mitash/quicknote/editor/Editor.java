@@ -24,7 +24,8 @@ public abstract class Editor {
         BULLET_LIST,
         ORDERED_LIST,
         BLOCK_QUOTE,
-        LINK
+        LINK,
+        STRIKE_THROUGH
     }
 
     protected EditorListener mListener;
@@ -61,6 +62,8 @@ public abstract class Editor {
 
     public abstract void toggleBold();
 
+    public abstract void toggleStrikeThrough();
+
     public abstract void toggleItalic();
 
     public abstract void toggleQuote();
@@ -86,6 +89,10 @@ public abstract class Editor {
         void linkTo(String url);
 
         void onClickedImage(String url);
+
+        void onTitleChanged(String title);
+
+        void onContentChanged(String content);
     }
 
     class EditorClient extends WebViewClient {

@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>RichTextEditor</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <script src="./tinymce/tinymce.min.js"></script>
     <script src="./jquery-3.1.1.min.js"></script>
     <link rel="stylesheet" type="text/css" href="./style.css">
@@ -12,17 +13,29 @@
             margin: 0 !important;
 			padding: 0 !important;
         }
+
+
     </style>
 </head>
 
 <body>
-<div id="title" style="outline: 0px solid transparent;" class="without-border field" placeholderText="Title" contenteditable="true"></div>
-<div contenteditable=false id=separatorDiv><hr></div>
-<div id="content" class="field" placeholderText="Content"></div>
+<div id="title" style="outline: 0px solid transparent;" class="without-border field"
+     placeholderText="Title" contenteditable="true" onkeyup="onTitleChanged()"></div>
+
+<div contenteditable=false id=separatorDiv>
+    <hr>
+</div>
+<div id="content" class="field" placeholderText="Content" onkeyup="onContentChanged()"></div>
 <p id="dummyP" style="display:none;"></p>
 </body>
 
 <script type="text/javascript">
+
+    function onTitleChanged(){
+        var divValue = document.getElementById("title").innerHTML;
+        alert("div = " + divValue);
+    }
+
     //resize editor area to fit window
     var dummyP = $('#dummyP');
     var hr = $('#hr');
@@ -78,6 +91,22 @@
         tinyMCE.editors[0].formatter.toggle('blockquote');
         var currentState = tinyMCE.editors[0].formatter.match('blockquote');
         nativeCallbackHandler.onFormatChange(JSON.stringify({blockquote:currentState}));
+    }
+
+    function toggleStrikeThrough() {
+        tinyMCE.editors[0].formatter.toggle('strikethrough');
+        var currentState = tinyMCE.editors[0].formatter.match('strikethrough');
+        nativeCallbackHandler.onFormatChange(JSON.stringify({strikethrough:currentState}));
+    }
+
+    function onTitleChanged() {
+        var divValue = document.getElementById("title").innerHTML;
+        nativeCallbackHandler.onTitleChanged(divValue);
+    }
+
+    function onContentChanged() {
+        var divValue = document.getElementById("content").innerHTML;
+        nativeCallbackHandler.onContentChanged(divValue);
     }
 
     function toggleHeader() {
@@ -193,6 +222,7 @@
             'h5',
             'h6',
             'blockquote',
+            'strikethrough',
             'link'
         ];
         var result = tinyMCE.editors[0].formatter.matchAll(intrestFormats);
@@ -247,6 +277,8 @@
     function isChildOfBody(elm) {
         return tinyMCE.editors[0].$.contains(tinyMCE.editors[0].getBody(), elm);
     }
+
+
 </script>
 
 </html>

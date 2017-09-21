@@ -44,10 +44,15 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:' + rootProject.supportLibVersion;
     compile 'com.android.support:support-v4:' + rootProject.supportLibVersion;
     compile 'com.android.support:design:' + rootProject.supportLibVersion;
+    compile 'com.facebook.shimmer:shimmer:0.1.0@aar'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:design:' + rootProject.supportLibVersion;
+    compile 'com.android.support:support-v4:' + rootProject.supportLibVersion;
     compile 'android.arch.lifecycle:extensions:' + rootProject.archLifecycleVersion;
     compile 'android.arch.persistence.room:runtime:' + rootProject.archRoomVersion;
     compile 'com.google.guava:guava:' + rootProject.guavaVersion;
     compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
+    compile 'joda-time:joda-time:2.9.9'
     annotationProcessor "android.arch.lifecycle:compiler:" + rootProject.archLifecycleVersion;
     annotationProcessor "android.arch.persistence.room:compiler:" + rootProject.archRoomVersion;
 
@@ -66,9 +71,6 @@ dependencies {
     androidTestCompile 'com.android.support:support-annotations:' + rootProject.supportLibVersion;
     androidTestCompile 'com.android.support:support-v4:' + rootProject.supportLibVersion;
     androidTestCompile 'com.android.support:recyclerview-v7:' + rootProject.supportLibVersion;
-    compile 'com.facebook.shimmer:shimmer:0.1.0@aar'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
+
     testCompile 'junit:junit:4.12'
 }

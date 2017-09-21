@@ -28,13 +28,31 @@ public class TinnyMceCallback {
         void onClickedImage(String url);
 
         void onCursorChanged(Map<Editor.Format, Object> enabledFormats);
+
+        void onTitleChanged(String title);
+
+        void onContentChanged(String content);
     }
 
     @JavascriptInterface
     public void onFormatChanged(String data) {
-        if (mTinnyMceListener != null) {
+        if (null != mTinnyMceListener) {
             Map<Editor.Format, Object> format = parseFormat(data);
             mTinnyMceListener.onFormatChanged(format);
+        }
+    }
+
+    @JavascriptInterface
+    public void onTitleChanged(String title) {
+        if (mTinnyMceListener != null) {
+            mTinnyMceListener.onTitleChanged(title);
+        }
+    }
+
+    @JavascriptInterface
+    public void onContentChanged(String content) {
+        if (mTinnyMceListener != null) {
+            mTinnyMceListener.onContentChanged(content);
         }
     }
 
@@ -90,6 +108,8 @@ public class TinnyMceCallback {
                 return Editor.Format.BLOCK_QUOTE;
             case "link":
                 return Editor.Format.LINK;
+            case "strikethrough":
+                return Editor.Format.STRIKE_THROUGH;
             default:
                 return null;
         }

@@ -120,6 +120,11 @@ public class RichTextEditor extends Editor implements TinnyMceCallback.TinnyMceL
     }
 
     @Override
+    public void toggleStrikeThrough() {
+        execJs("toggleStrikeThrough();");
+    }
+
+    @Override
     public void toggleItalic() {
         execJs("toggleItalic();");
     }
@@ -157,5 +162,15 @@ public class RichTextEditor extends Editor implements TinnyMceCallback.TinnyMceL
     @Override
     public void onCursorChanged(Map<Format, Object> enabledFormats) {
         mListener.onCursorChanged(enabledFormats);
+    }
+
+    @Override
+    public void onTitleChanged(String title) {
+        mListener.onTitleChanged(title);
+    }
+
+    @Override
+    public void onContentChanged(String content) {
+        mListener.onContentChanged(content);
     }
 }
