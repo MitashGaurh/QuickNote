@@ -1,4 +1,4 @@
-package com.mitash.quicknote.view;
+package com.mitash.quicknote.view.notelist;
 
 import android.app.Activity;
 import android.arch.lifecycle.LifecycleFragment;
@@ -7,6 +7,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +16,18 @@ import android.view.ViewGroup;
 import com.mitash.quicknote.R;
 import com.mitash.quicknote.database.entity.NoteEntity;
 import com.mitash.quicknote.databinding.FragmentNoteListBinding;
+import com.mitash.quicknote.model.Note;
 import com.mitash.quicknote.utils.ActivityUtils;
-import com.mitash.quicknote.view.adapter.NoteAdapter;
+import com.mitash.quicknote.view.stickyheader.DividerDecoration;
+import com.mitash.quicknote.view.stickyheader.StickyHeadersDecoration;
+import com.mitash.quicknote.view.stickyheader.StickyHeadersTouchListener;
 import com.mitash.quicknote.viewmodel.NoteListViewModel;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-public class NoteListFragment extends LifecycleFragment implements View.OnClickListener {
+public class NoteListFragment extends LifecycleFragment implements View.OnClickListener, NoteActionListener {
 
     private static final String TAG = "NoteListFragment";
 
@@ -61,11 +68,29 @@ public class NoteListFragment extends LifecycleFragment implements View.OnClickL
 
     private void setUpRecyclerView() {
         mNoteAdapter = new NoteAdapter(null);
+        mNoteAdapter.setNoteActionListener(this);
 
         mBinding.rvNote.setAdapter(mNoteAdapter);
-        mBinding.rvNote.setLayoutManager(new LinearLayoutManager(mContext));
+        mBinding.rvNote.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
 
         mBinding.rvNote.setLayoutReference(R.layout.layout_note_list_shimmer);
+
+        // Add the sticky headers decoration
+        final StickyHeadersDecoration headersDecor = new StickyHeadersDecoration(mNoteAdapter);
+        mBinding.rvNote.addItemDecoration(headersDecor);
+
+        // Add decoration for dividers between list items
+        mBinding.rvNote.addItemDecoration(new DividerDecoration(mContext));
+
+        // Add touch listeners
+        mBinding.rvNote.addOnItemTouchListener(new StickyHeadersTouchListener(headersDecor));
+
+        mNoteAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                headersDecor.invalidateHeaders();
+            }
+        });
     }
 
     @Override
@@ -91,6 +116,17 @@ public class NoteListFragment extends LifecycleFragment implements View.OnClickL
                 if (null != notes) {
                     mNoteListViewModel.mDataLoading.set(false);
                     if (!notes.isEmpty()) {
+                        Collections.sort(notes, new Comparator<NoteEntity>() {
+                            @Override
+                            public int compare(NoteEntity o1, NoteEntity o2) {
+                                if (o2.getUpdatedDate().getTime() > o1.getUpdatedDate().getTime()) {
+                                    return 1;
+                                } else if (o2.getUpdatedDate().getTime() < o1.getUpdatedDate().getTime()) {
+                                    return -1;
+                                }
+                                return 0;
+                            }
+                        });
                         mNoteAdapter.swapNoteList(notes);
                         mNoteListViewModel.mDataAvailable.set(true);
                     } else {
@@ -104,5 +140,10 @@ public class NoteListFragment extends LifecycleFragment implements View.OnClickL
     @Override
     public void onClick(View v) {
         mNoteListViewModel.addNewNote();
+    }
+
+    @Override
+    public void onNoteClicked(Note note) {
+        mNoteListViewModel.getViewNoteEvent().setValue(note.getId());
     }
 }

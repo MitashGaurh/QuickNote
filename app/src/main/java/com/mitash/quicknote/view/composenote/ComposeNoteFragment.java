@@ -1,7 +1,7 @@
-package com.mitash.quicknote.view;
-
+package com.mitash.quicknote.view.composenote;
 
 import android.arch.lifecycle.LifecycleFragment;
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,15 +15,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mitash.quicknote.R;
+import com.mitash.quicknote.database.entity.NoteEntity;
 import com.mitash.quicknote.databinding.FragmentComposeNoteBinding;
 import com.mitash.quicknote.databinding.LayoutFormatBarRichTextBinding;
 import com.mitash.quicknote.editor.Editor;
 import com.mitash.quicknote.editor.RichTextEditor;
 import com.mitash.quicknote.utils.ActivityUtils;
 import com.mitash.quicknote.utils.DialogUtils;
+import com.mitash.quicknote.view.NoteComposeType;
 import com.mitash.quicknote.viewmodel.ComposeNoteViewModel;
 
 import java.util.Map;
+
+import static com.mitash.quicknote.view.NoteComposeType.NEW_NOTE;
+import static com.mitash.quicknote.view.NoteComposeType.VIEW_NOTE;
 
 public class ComposeNoteFragment extends LifecycleFragment implements Editor.EditorListener, View.OnClickListener {
 
@@ -33,14 +38,20 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
 
     private Editor mEditor;
 
-    private boolean mIsEditingEnabled = true;
-
     private LayoutFormatBarRichTextBinding mFormatBarBinding;
 
     private ComposeNoteViewModel mComposeNoteViewModel;
 
-    public static ComposeNoteFragment newInstance() {
-        return new ComposeNoteFragment();
+    private MenuItem mSaveItem;
+
+    private NoteComposeType mComposeType = NEW_NOTE;
+
+    public static ComposeNoteFragment newInstance(Bundle extras) {
+        ComposeNoteFragment composeNoteFragment = new ComposeNoteFragment();
+        if (null != extras) {
+            composeNoteFragment.setArguments(extras);
+        }
+        return composeNoteFragment;
     }
 
     @Override
@@ -57,18 +68,7 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
 
         mComposeNoteViewModel = ActivityUtils.obtainViewModel(getActivity(), ComposeNoteViewModel.class);
 
-        mEditor = new RichTextEditor(this);
-
-        mEditor.init(mBinding.webViewEditor);
-
-        mFormatBarBinding = LayoutFormatBarRichTextBinding.inflate(inflater, mBinding.editorBarContainer, false);
-
-        mBinding.editorBarContainer.addView(mFormatBarBinding.getRoot(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
-                , ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        mBinding.setViewModel(mComposeNoteViewModel);
-
-        mComposeNoteViewModel.mEditingEnabled.set(true);
+        initializeEditor(inflater);
 
         return mBinding.getRoot();
     }
@@ -77,16 +77,25 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        for (int i = 0; i < mFormatBarBinding.layoutFormatButtons.getChildCount(); i++) {
-            mFormatBarBinding.layoutFormatButtons.getChildAt(i).setOnClickListener(this);
-        }
+        if (mComposeNoteViewModel.mEditingEnabled.get()) {
+            for (int i = 0; i < mFormatBarBinding.layoutFormatButtons.getChildCount(); i++) {
+                mFormatBarBinding.layoutFormatButtons.getChildAt(i).setOnClickListener(this);
+            }
 
-        mFormatBarBinding.btnLink.setTag("");
+            mFormatBarBinding.btnLink.setTag("");
+        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_compose, menu);
+        mSaveItem = menu.findItem(R.id.menu_save);
+
+        if (mComposeType.equals(VIEW_NOTE)) {
+            toggleSave(false);
+        } else {
+            toggleSave(true);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -101,10 +110,55 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
         return super.onOptionsItemSelected(item);
     }
 
+    private void initializeEditor(LayoutInflater inflater) {
+        Bundle args = getArguments();
+
+        mEditor = new RichTextEditor(this);
+
+        mEditor.init(mBinding.webViewEditor);
+
+        mBinding.setViewModel(mComposeNoteViewModel);
+
+        if (null != args) {
+
+            mComposeType = (NoteComposeType) args.getSerializable(ComposeNoteActivity.EXTRA_COMPOSE_TYPE);
+
+            mComposeNoteViewModel.attach(args.getInt(ComposeNoteActivity.EXTRA_NOTE_ID));
+
+            mComposeNoteViewModel.mEditingEnabled.set(false);
+
+        } else {
+            mFormatBarBinding = LayoutFormatBarRichTextBinding.inflate(inflater, mBinding.editorBarContainer, false);
+
+            mBinding.editorBarContainer.addView(mFormatBarBinding.getRoot(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
+                    , ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            mComposeNoteViewModel.mEditingEnabled.set(true);
+
+        }
+    }
+
+    private void subscribeView() {
+        mComposeNoteViewModel.loadNote().observe(this, new Observer<NoteEntity>() {
+            @Override
+            public void onChanged(@Nullable NoteEntity noteEntity) {
+                if (null != noteEntity) {
+                    mEditor.setTitle(noteEntity.getTitle());
+                    mEditor.setContent(noteEntity.getNoteText());
+                } else {
+                    Log.e(TAG, "onChanged: Note: null");
+                }
+            }
+        });
+    }
+
     @Override
     public void onPageLoaded() {
-        Log.d(TAG, "onPageLoaded: ");
-        mEditor.setEditingEnabled(mIsEditingEnabled);
+        mEditor.setEditingEnabled(mComposeNoteViewModel.mEditingEnabled.get());
+
+        if (mComposeType.equals(VIEW_NOTE)) {
+            subscribeView();
+        }
     }
 
     @Override
@@ -114,7 +168,6 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
 
     @Override
     public void onStyleChanged(final Editor.Format style, final boolean enabled) {
-        Log.d(TAG, "onStyleChanged: ");
         mFormatBarBinding.btnBold.post(new Runnable() {
             @Override
             public void run() {
@@ -141,7 +194,6 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
 
     @Override
     public void onFormatChanged(final Map<Editor.Format, Object> enabledFormats) {
-        Log.d(TAG, "onFormatChanged: ");
         mFormatBarBinding.btnBold.post(new Runnable() {
             @Override
             public void run() {
@@ -152,7 +204,6 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
 
     @Override
     public void onCursorChanged(final Map<Editor.Format, Object> enabledFormats) {
-        Log.d(TAG, "onCursorChanged: ");
         mFormatBarBinding.btnBold.post(new Runnable() {
             @Override
             public void run() {
@@ -173,7 +224,6 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
 
     @Override
     public void linkTo(String url) {
-        Log.d(TAG, "linkTo: ");
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
         try {
@@ -199,7 +249,6 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
     }
 
     private void refreshFormatStatus(Map<Editor.Format, Object> formatStatus) {
-        Log.d(TAG, "refreshFormatStatus: ");
         for (Map.Entry<Editor.Format, Object> entry : formatStatus.entrySet()) {
             switch (entry.getKey()) {
                 case BOLD:
@@ -278,5 +327,7 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
         }
     }
 
-
+    private void toggleSave(boolean visibility) {
+        mSaveItem.setVisible(visibility);
+    }
 }

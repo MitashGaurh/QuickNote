@@ -4,6 +4,10 @@
     <data>
 
         <variable
+            name="listener"
+            type="com.mitash.quicknote.view.notelist.NoteActionListener" />
+
+        <variable
             name="note"
             type="com.mitash.quicknote.model.Note" />
     </data>
@@ -12,37 +16,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/cardview_light_background"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:onClick="@{() ->  listener.onNoteClicked(note)}"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_item_note_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/colorPrimaryText"
+            android:layout_marginEnd="@dimen/dimen_10_dp"
+            android:layout_marginStart="@dimen/dimen_10_dp"            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:layout_marginTop="@dimen/dimen_10_dp"
+            android:textColor="@color/colorTitleText"
             app:htmlText="@{note.title}" />
 
         <TextView
             android:id="@+id/tv_item_note_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginEnd="@dimen/dimen_10_dp"
+            android:layout_marginStart="@dimen/dimen_10_dp"
+            android:layout_marginBottom="@dimen/dimen_10_dp"
             android:maxLines="3"
-            app:htmlText="@{note.noteText}" />
-
-        <TextView
-            android:id="@+id/tv_item_note_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            app:dateText="@{note.createdDate}" />
+            app:content="@{note.noteText}"
+            app:dateText="@{note.updatedDate}" />
 
     </LinearLayout>
 </layout>

@@ -72,4 +72,15 @@ public class NoteEntity implements Note {
     public void setUpdatedDate(Date updatedDate) {
         this.updatedDate = updatedDate;
     }
+
+    @Override
+    public String toString() {
+        return "NoteEntity{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", noteText='" + noteText + '\'' +
+                ", createdDate=" + createdDate +
+                ", updatedDate=" + updatedDate +
+                '}';
+    }
 }

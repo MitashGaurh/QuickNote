@@ -1,14 +1,13 @@
 package com.mitash.quicknote.view;
 
 import android.databinding.BindingAdapter;
-import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
 
 import com.mitash.quicknote.database.converter.DateConverter;
+import com.mitash.quicknote.utils.HtmlUtils;
+import com.mitash.quicknote.utils.TimeUtils;
 import com.mitash.quicknote.view.shimmer.ShimmerRecyclerView;
-
-import org.joda.time.format.DateTimeFormat;
 
 import java.util.Date;
 
@@ -32,18 +31,14 @@ public class BindingAdapters {
         }
     }
 
-    @BindingAdapter("dateText")
-    public static void dateToText(TextView textView, Date date) {
-        textView.setText(DateTimeFormat.forPattern("dd-MMM-yy").print(DateConverter.toTimestamp(date)));
+    @BindingAdapter({"bind:dateText", "bind:content"})
+    public static void dateToText(TextView textView, Date date, String content) {
+        textView.setText(TimeUtils.toSlashFormat(DateConverter.toTimestamp(date)) + " " + HtmlUtils.htmlToText(content));
     }
 
     @SuppressWarnings("deprecation")
     @BindingAdapter("htmlText")
     public static void htmlToText(TextView textView, String html) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            textView.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString());
-        } else {
-            textView.setText(Html.fromHtml(html).toString());
-        }
+        textView.setText(HtmlUtils.htmlToText(html));
     }
 }

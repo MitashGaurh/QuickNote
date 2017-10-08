@@ -85,6 +85,7 @@ public class ComposeNoteViewModel extends AndroidViewModel {
         note.setTitle(mNoteTitle.get());
         note.setNoteText(mNoteContent.get());
         note.setCreatedDate(new Date());
+        note.setUpdatedDate(new Date());
         if (null != mDbCreator.getDatabase()) {
             new Thread(new Runnable() {
                 @Override

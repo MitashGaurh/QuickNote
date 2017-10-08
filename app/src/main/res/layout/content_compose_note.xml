@@ -6,5 +6,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.mitash.quicknote.view.ComposeNoteActivity"
+    tools:context="com.mitash.quicknote.view.composenote.ComposeNoteActivity"
     tools:showIn="@layout/activity_compose_note"/>

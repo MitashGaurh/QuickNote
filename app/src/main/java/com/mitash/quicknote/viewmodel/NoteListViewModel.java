@@ -8,7 +8,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.databinding.ObservableBoolean;
 
-import com.google.common.collect.Lists;
 import com.mitash.quicknote.database.DatabaseCreator;
 import com.mitash.quicknote.database.entity.NoteEntity;
 import com.mitash.quicknote.events.SingleLiveEvent;
@@ -28,6 +27,8 @@ public class NoteListViewModel extends AndroidViewModel {
     public final ObservableBoolean mDataAvailable = new ObservableBoolean(false);
 
     private final SingleLiveEvent<Void> mNewNoteEvent = new SingleLiveEvent<>();
+
+    private final SingleLiveEvent<Integer> mViewNoteEvent = new SingleLiveEvent<>();
 
     private final DatabaseCreator mDbCreator;
 
@@ -72,6 +73,10 @@ public class NoteListViewModel extends AndroidViewModel {
 
     public SingleLiveEvent<Void> getNewNoteEvent() {
         return mNewNoteEvent;
+    }
+
+    public SingleLiveEvent<Integer> getViewNoteEvent() {
+        return mViewNoteEvent;
     }
 
     public void addNewNote() {

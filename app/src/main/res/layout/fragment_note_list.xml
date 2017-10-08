@@ -15,7 +15,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.mitash.quicknote.view.NoteListFragment">
+        tools:context="com.mitash.quicknote.view.notelist.NoteListFragment">
 
         <com.mitash.quicknote.view.shimmer.ShimmerRecyclerView
             android:id="@+id/rv_note"

@@ -1,7 +1,12 @@
 package com.mitash.quicknote.utils;
 
 
+import android.graphics.Color;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -103,9 +108,10 @@ public class HtmlUtils {
      * Compares two <code>Sets</code> and returns a <code>Map</code> of elements not contained in both
      * <code>Sets</code>. Elements contained in <code>oldSet</code> but not in <code>newSet</code> will be marked
      * <code>false</code> in the returned map; the converse will be marked <code>true</code>.
+     *
      * @param oldSet the older of the two <code>Sets</code>
      * @param newSet the newer of the two <code>Sets</code>
-     * @param <E> type of element stored in the <code>Sets</code>
+     * @param <E>    type of element stored in the <code>Sets</code>
      * @return a <code>Map</code> containing the difference between <code>oldSet</code> and <code>newSet</code>, and whether the
      * element was added (<code>true</code>) or removed (<code>false</code>) in <code>newSet</code>
      */
@@ -131,7 +137,8 @@ public class HtmlUtils {
 
     /**
      * Splits a delimited string into a set of strings.
-     * @param string the delimited string to split
+     *
+     * @param string    the delimited string to split
      * @param delimiter the string delimiter
      */
     public static Set<String> splitDelimitedString(String string, String delimiter) {
@@ -148,6 +155,7 @@ public class HtmlUtils {
     /**
      * Accepts a set of strings, each string being a key-value pair (<code>id=5</code>,
      * <code>name=content-filed</code>). Returns a map of all the key-value pairs in the set.
+     *
      * @param keyValueSet the set of key-value pair strings
      */
     public static Map<String, String> buildMapFromKeyValuePairs(Set<String> keyValueSet) {
@@ -163,8 +171,9 @@ public class HtmlUtils {
 
     /**
      * Splits a delimited string of value pairs (of the form identifier=value) into a set of strings.
-     * @param string the delimited string to split
-     * @param delimiter the string delimiter
+     *
+     * @param string      the delimited string to split
+     * @param delimiter   the string delimiter
      * @param identifiers the identifiers to match for in the string
      */
     public static Set<String> splitValuePairDelimitedString(String string, String delimiter, List<String> identifiers) {
@@ -190,5 +199,22 @@ public class HtmlUtils {
             }
         }
         return html;
+    }
+
+    @SuppressWarnings("deprecation")
+    public static String htmlToText(String html) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString().replaceAll("\\n"," ");
+        } else {
+            return Html.fromHtml(html).toString().replaceAll("\\n"," ");
+        }
+    }
+
+    public static Spannable toSpannableText(String text) {
+        Spannable spannable = new SpannableString(text);
+
+        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#0097A7")), 0
+                , text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannable;
     }
 }

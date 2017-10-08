@@ -1,4 +1,4 @@
-package com.mitash.quicknote.view;
+package com.mitash.quicknote.view.composenote;
 
 import android.arch.lifecycle.Observer;
 import android.graphics.PorterDuff;
@@ -14,6 +14,9 @@ import com.mitash.quicknote.utils.ActivityUtils;
 import com.mitash.quicknote.viewmodel.ComposeNoteViewModel;
 
 public class ComposeNoteActivity extends LifeCycleAppCompatActivity {
+
+    public static final String EXTRA_NOTE_ID = "NOTE_ID";
+    public static final String EXTRA_COMPOSE_TYPE = "COMPOSE_TYPE";
 
     private ComposeNoteViewModel mComposeNoteViewModel;
 
@@ -33,7 +36,7 @@ public class ComposeNoteActivity extends LifeCycleAppCompatActivity {
         }
 
         if (null == savedInstanceState) {
-            ComposeNoteFragment composeNoteFragment = ComposeNoteFragment.newInstance();
+            ComposeNoteFragment composeNoteFragment = ComposeNoteFragment.newInstance(getIntent().getExtras());
 
             ActivityUtils.addFragmentToActivity(getSupportFragmentManager()
                     , composeNoteFragment
