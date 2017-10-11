@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#FAFFFFFF"
-    android:orientation="horizontal"
-    android:paddingBottom="@dimen/dimen_5_dp"
-    android:paddingEnd="@dimen/dimen_10_dp"
-    android:paddingStart="@dimen/dimen_10_dp"
-    android:paddingTop="@dimen/dimen_5_dp"
-    android:textAllCaps="true"
-    android:textColor="@color/colorHeaderText"
-    android:textSize="14sp"
-    tools:text="Date" />
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="note"
+            type="com.mitash.quicknote.model.Note" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FAFFFFFF"
+            android:paddingBottom="@dimen/dimen_5_dp"
+            android:paddingEnd="@dimen/dimen_10_dp"
+            android:paddingStart="@dimen/dimen_10_dp"
+            android:paddingTop="@dimen/dimen_5_dp"
+            android:textAllCaps="true"
+            android:textColor="@color/colorHeaderText"
+            android:textSize="14sp"
+            app:createHeader="@{note.updatedDate}"
+            tools:text="Date" />
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="@drawable/line_divider" />
+    </LinearLayout>
+</layout>

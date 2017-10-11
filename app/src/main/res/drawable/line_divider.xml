@@ -6,10 +6,6 @@
         android:width="1dp"
         android:height="1dp" />
 
-    <padding
-        android:left="@dimen/dimen_5_dp"
-        android:right="@dimen/dimen_5_dp" />
-
     <solid android:color="@color/cardview_shadow_end_color" />
 
 </shape>

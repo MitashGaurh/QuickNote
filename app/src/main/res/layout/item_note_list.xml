@@ -17,15 +17,16 @@
         android:layout_height="wrap_content"
         android:background="@color/cardview_light_background"
         android:onClick="@{() ->  listener.onNoteClicked(note)}"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/dimen_10_dp"
+        android:paddingStart="@dimen/dimen_10_dp">
 
         <TextView
             android:id="@+id/tv_item_note_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dimen_10_dp"
-            android:layout_marginStart="@dimen/dimen_10_dp"            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:layout_marginTop="@dimen/dimen_10_dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textColor="@color/colorTitleText"
             app:htmlText="@{note.title}" />
 
@@ -33,10 +34,9 @@
             android:id="@+id/tv_item_note_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dimen_10_dp"
-            android:layout_marginStart="@dimen/dimen_10_dp"
             android:layout_marginBottom="@dimen/dimen_10_dp"
             android:maxLines="3"
+            android:minLines="3"
             app:content="@{note.noteText}"
             app:dateText="@{note.updatedDate}" />
 

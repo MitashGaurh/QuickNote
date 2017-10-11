@@ -49,7 +49,7 @@ public class ComposeNoteActivity extends LifeCycleAppCompatActivity {
         mComposeNoteViewModel.getSaveNoteEvent().observe(this, new Observer<Void>() {
             @Override
             public void onChanged(@Nullable Void aVoid) {
-                mComposeNoteViewModel.saveNote();
+                mComposeNoteViewModel.saveNote(ComposeNoteActivity.this);
                 finish();
             }
         });

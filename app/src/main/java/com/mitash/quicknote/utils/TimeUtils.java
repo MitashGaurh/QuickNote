@@ -30,7 +30,7 @@ public class TimeUtils {
     }
 
     public static String toMonthFormat(long timeInMills) {
-        return DateTimeFormat.forPattern("MMMM-yy").print(timeInMills);
+        return DateTimeFormat.forPattern("MMMM yyyy").print(timeInMills);
     }
 
     public static String toSlashFormat(long timeInMills) {

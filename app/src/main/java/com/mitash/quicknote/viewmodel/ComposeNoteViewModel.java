@@ -6,12 +6,16 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
+import android.content.Context;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
+import android.widget.Toast;
 
+import com.mitash.quicknote.R;
 import com.mitash.quicknote.database.DatabaseCreator;
 import com.mitash.quicknote.database.entity.NoteEntity;
 import com.mitash.quicknote.events.SingleLiveEvent;
+import com.mitash.quicknote.utils.HtmlUtils;
 
 import java.util.Date;
 
@@ -80,10 +84,19 @@ public class ComposeNoteViewModel extends AndroidViewModel {
         mSaveNoteEvent.call();
     }
 
-    public void saveNote() {
+    public void saveNote(Context context) {
         final NoteEntity note = new NoteEntity();
-        note.setTitle(mNoteTitle.get());
-        note.setNoteText(mNoteContent.get());
+        String title = context.getString(R.string.text_untitled_note);
+        if (null != mNoteTitle.get() && !mNoteTitle.get().equals("")) {
+            title = HtmlUtils.htmlToText(mNoteTitle.get());
+        }
+        note.setTitle(title);
+        if (null != mNoteContent.get() && !mNoteContent.get().equals("")) {
+            note.setNoteText(mNoteContent.get());
+        } else {
+            Toast.makeText(context, "Can't save an empty note.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         note.setCreatedDate(new Date());
         note.setUpdatedDate(new Date());
         if (null != mDbCreator.getDatabase()) {

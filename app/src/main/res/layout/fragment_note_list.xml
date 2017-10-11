@@ -4,7 +4,7 @@
 
     <data>
 
-        <import type="android.view.View"/>
+        <import type="android.view.View" />
 
         <variable
             name="viewModel"
@@ -39,9 +39,9 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="@dimen/fab_margin"
+            android:onClick="@{() ->  viewModel.addNewNote()}"
             app:fabSize="normal"
-            app:srcCompat="@drawable/ic_add"
-            android:onClick="@{() ->  viewModel.addNewNote()}"/>
+            app:srcCompat="@drawable/ic_add" />
 
     </RelativeLayout>
 </layout>

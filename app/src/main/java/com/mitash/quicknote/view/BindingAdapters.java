@@ -1,6 +1,11 @@
 package com.mitash.quicknote.view;
 
 import android.databinding.BindingAdapter;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.TextView;
 
@@ -32,8 +37,23 @@ public class BindingAdapters {
     }
 
     @BindingAdapter({"bind:dateText", "bind:content"})
-    public static void dateToText(TextView textView, Date date, String content) {
-        textView.setText(TimeUtils.toSlashFormat(DateConverter.toTimestamp(date)) + " " + HtmlUtils.htmlToText(content));
+    public static void createContent(TextView textView, Date date, String content) {
+        String dateString = TimeUtils.toSlashFormat(DateConverter.toTimestamp(date));
+        SpannableStringBuilder stringBuilder =
+                HtmlUtils.toSpannableText(dateString, "#00BCD4");
+
+        stringBuilder.append(" ").append(HtmlUtils.htmlToText(content));
+
+        // Span to set text color to some RGB value
+        final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.parseColor("#80000000"));
+        stringBuilder.setSpan(fcs, dateString.length(), stringBuilder.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        textView.setText(stringBuilder);
+    }
+
+    @BindingAdapter("createHeader")
+    public static void createHeader(TextView textView, Date date) {
+        textView.setText(TimeUtils.toMonthFormat(DateConverter.toTimestamp(date)));
     }
 
     @SuppressWarnings("deprecation")

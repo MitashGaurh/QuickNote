@@ -1,17 +1,14 @@
 package com.mitash.quicknote.view.notelist;
 
+import android.graphics.Typeface;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.mitash.quicknote.R;
-import com.mitash.quicknote.database.converter.DateConverter;
 import com.mitash.quicknote.database.entity.NoteEntity;
+import com.mitash.quicknote.databinding.ItemNoteHeaderBinding;
 import com.mitash.quicknote.databinding.ItemNoteListBinding;
-import com.mitash.quicknote.utils.TimeUtils;
 import com.mitash.quicknote.view.stickyheader.StickyHeadersAdapter;
 
 import java.util.Calendar;
@@ -24,7 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Created by Mitash Gaurh on 9/7/2017.
  */
 
-public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.SectionViewHolder> implements StickyHeadersAdapter<RecyclerView.ViewHolder> {
+public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.SectionViewHolder> implements StickyHeadersAdapter<NoteAdapter.HeaderViewHolder> {
 
     private List<NoteEntity> mNoteList;
 
@@ -35,11 +32,10 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.SectionViewHol
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_note_header, parent, false);
-        return new RecyclerView.ViewHolder(view) {
-        };
+    public HeaderViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
+        return new HeaderViewHolder(ItemNoteHeaderBinding.inflate(LayoutInflater.from(parent.getContext())
+                , parent
+                , false));
     }
 
     @Override
@@ -52,16 +48,15 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.SectionViewHol
     }
 
     @Override
-    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int position) {
-        TextView textView = (TextView) holder.itemView;
-        textView.setText(TimeUtils.toMonthFormat(
-                DateConverter.toTimestamp(mNoteList.get(position).getUpdatedDate())));
+    public void onBindHeaderViewHolder(HeaderViewHolder holder, int position) {
+        holder.mItemNoteHeaderBinding.setNote(mNoteList.get(position));
+        holder.mItemNoteHeaderBinding.executePendingBindings();
     }
 
     @Override
     public void onBindViewHolder(SectionViewHolder holder, int position) {
-        holder.mBinding.setNote(mNoteList.get(position));
-        holder.mBinding.executePendingBindings();
+        holder.mItemNoteListBinding.setNote(mNoteList.get(position));
+        holder.mItemNoteListBinding.executePendingBindings();
     }
 
     @Override
@@ -127,11 +122,23 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.SectionViewHol
 
     class SectionViewHolder extends RecyclerView.ViewHolder {
 
-        final ItemNoteListBinding mBinding;
+        final ItemNoteListBinding mItemNoteListBinding;
 
         SectionViewHolder(ItemNoteListBinding binding) {
             super(binding.getRoot());
-            mBinding = binding;
+            mItemNoteListBinding = binding;
+            mItemNoteListBinding.tvItemNoteTitle.setTypeface(
+                    Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Merriweather-Regular.ttf"));
+        }
+    }
+
+    class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        final ItemNoteHeaderBinding mItemNoteHeaderBinding;
+
+        public HeaderViewHolder(ItemNoteHeaderBinding binding) {
+            super(binding.getRoot());
+            mItemNoteHeaderBinding = binding;
         }
     }
 }

@@ -53,6 +53,8 @@ public class RichTextEditor extends Editor implements TinnyMceCallback.TinnyMceL
 
     @Override
     public void setTitle(String title) {
+        title = HtmlUtils.escapeHtml(title);
+        Log.d(TAG, "setTitle: Title " + title);
         execJs(String.format(Locale.US, "setTitle('%s');", HtmlUtils.escapeHtml(title)));
     }
 

@@ -4,7 +4,7 @@ package com.mitash.quicknote.utils;
 import android.graphics.Color;
 import android.text.Html;
 import android.text.Spannable;
-import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 
@@ -204,17 +204,21 @@ public class HtmlUtils {
     @SuppressWarnings("deprecation")
     public static String htmlToText(String html) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString().replaceAll("\\n"," ");
+            return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString().replaceAll("\\n", " ");
         } else {
-            return Html.fromHtml(html).toString().replaceAll("\\n"," ");
+            return Html.fromHtml(html).toString().replaceAll("\\n", " ");
         }
     }
 
-    public static Spannable toSpannableText(String text) {
-        Spannable spannable = new SpannableString(text);
+    public static SpannableStringBuilder toSpannableText(String text, String color) {
+        final SpannableStringBuilder sb = new SpannableStringBuilder(text);
 
-        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#0097A7")), 0
-                , text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return spannable;
+        // Span to set text color to some RGB value
+        final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.parseColor(color));
+
+        // Set the text color for first 4 characters
+        sb.setSpan(fcs, 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        return sb;
     }
 }
