@@ -12,4 +12,5 @@
     <string name="text_save">Save</string>
 
     <string name="text_untitled_note">Untitled note</string>
+    <string name="text_error_empty_note">Can\'t save an empty note.</string>
 </resources>

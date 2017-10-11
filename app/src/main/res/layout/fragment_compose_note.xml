@@ -1,10 +1,12 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="viewModel"
-            type="com.mitash.quicknote.viewmodel.ComposeNoteViewModel"/>
+            type="com.mitash.quicknote.viewmodel.ComposeNoteViewModel" />
     </data>
 
     <RelativeLayout
@@ -17,13 +19,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            app:visibleGone="@{viewModel.mEditingEnabled}" />
+            app:visibleGone="@{viewModel.mFrameEnabled}" />
 
         <WebView
             android:id="@+id/web_view_editor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/editor_bar_container" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_edit_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/fab_margin"
+            android:onClick="@{() ->  viewModel.editNote()}"
+            app:fabGone="@{viewModel.mFabEnabled}"
+            app:fabSize="normal"
+            app:srcCompat="@drawable/ic_edit"
+            tools:ignore="RelativeOverlap" />
 
     </RelativeLayout>
 </layout>

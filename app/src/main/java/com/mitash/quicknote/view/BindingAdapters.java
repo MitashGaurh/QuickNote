@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.TextView;
 
@@ -25,6 +26,15 @@ public class BindingAdapters {
     @BindingAdapter("visibleGone")
     public static void showHide(View view, boolean show) {
         view.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    @BindingAdapter("fabGone")
+    public static void showHideFab(FloatingActionButton fab, boolean show) {
+        if (show) {
+            fab.show();
+        } else {
+            fab.hide();
+        }
     }
 
     @BindingAdapter("shimmerGone")

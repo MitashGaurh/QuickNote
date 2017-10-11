@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.mitash.quicknote.LifeCycleAppCompatActivity;
 import com.mitash.quicknote.R;
+import com.mitash.quicknote.database.entity.NoteEntity;
 import com.mitash.quicknote.utils.ActivityUtils;
 import com.mitash.quicknote.viewmodel.ComposeNoteViewModel;
 
@@ -45,12 +46,24 @@ public class ComposeNoteActivity extends LifeCycleAppCompatActivity {
 
         mComposeNoteViewModel = ActivityUtils.obtainViewModel(this, ComposeNoteViewModel.class);
 
+
+        subscribeNoteEvents();
+    }
+
+    private void subscribeNoteEvents() {
         // Subscribe to "save note" event
         mComposeNoteViewModel.getSaveNoteEvent().observe(this, new Observer<Void>() {
             @Override
             public void onChanged(@Nullable Void aVoid) {
                 mComposeNoteViewModel.saveNote(ComposeNoteActivity.this);
-                finish();
+            }
+        });
+
+        // Subscribe to "update note" event
+        mComposeNoteViewModel.getUpdateNoteEvent().observe(this, new Observer<Void>() {
+            @Override
+            public void onChanged(@Nullable Void aVoid) {
+                mComposeNoteViewModel.updateNote();
             }
         });
     }

@@ -1,7 +1,9 @@
 package com.mitash.quicknote.view.composenote;
 
+import android.app.Activity;
 import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -46,12 +48,21 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
 
     private NoteComposeType mComposeType = NEW_NOTE;
 
+    private Context mContext;
+
     public static ComposeNoteFragment newInstance(Bundle extras) {
         ComposeNoteFragment composeNoteFragment = new ComposeNoteFragment();
         if (null != extras) {
             composeNoteFragment.setArguments(extras);
         }
         return composeNoteFragment;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mContext = activity;
     }
 
     @Override
@@ -77,13 +88,7 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (mComposeNoteViewModel.mEditingEnabled.get()) {
-            for (int i = 0; i < mFormatBarBinding.layoutFormatButtons.getChildCount(); i++) {
-                mFormatBarBinding.layoutFormatButtons.getChildAt(i).setOnClickListener(this);
-            }
-
-            mFormatBarBinding.btnLink.setTag("");
-        }
+        initFrameClickListeners();
     }
 
     @Override
@@ -104,7 +109,13 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
 
         switch (item.getItemId()) {
             case R.id.menu_save:
-                mComposeNoteViewModel.callSaveEvent();
+                if (mComposeType.equals(NEW_NOTE)) {
+                    mComposeNoteViewModel.callSaveEvent();
+                    mEditor.setTitle(mComposeNoteViewModel.mNoteTitle.get());
+                } else {
+                    mComposeNoteViewModel.callUpdateEvent();
+                }
+                toggleEditing(false);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -125,17 +136,40 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
 
             mComposeNoteViewModel.attach(args.getInt(ComposeNoteActivity.EXTRA_NOTE_ID));
 
-            mComposeNoteViewModel.mEditingEnabled.set(false);
+            mComposeNoteViewModel.mFrameEnabled.set(false);
+            mComposeNoteViewModel.mFabEnabled.set(true);
 
         } else {
-            mFormatBarBinding = LayoutFormatBarRichTextBinding.inflate(inflater, mBinding.editorBarContainer, false);
-
-            mBinding.editorBarContainer.addView(mFormatBarBinding.getRoot(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
-                    , ViewGroup.LayoutParams.WRAP_CONTENT));
-
-            mComposeNoteViewModel.mEditingEnabled.set(true);
-
+            mComposeNoteViewModel.mFrameEnabled.set(true);
+            mComposeNoteViewModel.mFabEnabled.set(false);
         }
+
+        attachFormatBar(inflater);
+
+        subscribeEditNoteEvent();
+    }
+
+    private void subscribeEditNoteEvent() {
+        mComposeNoteViewModel.getEditNoteEvent().observe(this, new Observer<Void>() {
+            @Override
+            public void onChanged(@Nullable Void aVoid) {
+                if (!mComposeNoteViewModel.mViewSubscribed.get()) {
+                    subscribeView();
+                }
+                if (!mComposeType.equals(VIEW_NOTE)) {
+                    mComposeType = VIEW_NOTE;
+                }
+
+                toggleEditing(true);
+            }
+        });
+    }
+
+    private void attachFormatBar(LayoutInflater inflater) {
+        mFormatBarBinding = LayoutFormatBarRichTextBinding.inflate(inflater, mBinding.editorBarContainer, false);
+
+        mBinding.editorBarContainer.addView(mFormatBarBinding.getRoot(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
+                , ViewGroup.LayoutParams.WRAP_CONTENT));
     }
 
     private void subscribeView() {
@@ -143,6 +177,8 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
             @Override
             public void onChanged(@Nullable NoteEntity noteEntity) {
                 if (null != noteEntity) {
+                    mComposeNoteViewModel.mNoteToUpdate.set(noteEntity);
+
                     mEditor.setTitle(noteEntity.getTitle());
                     mEditor.setContent(noteEntity.getNoteText());
                 } else {
@@ -150,11 +186,20 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
                 }
             }
         });
+        mComposeNoteViewModel.mViewSubscribed.set(true);
+    }
+
+    private void initFrameClickListeners() {
+        for (int i = 0; i < mFormatBarBinding.layoutFormatButtons.getChildCount(); i++) {
+            mFormatBarBinding.layoutFormatButtons.getChildAt(i).setOnClickListener(this);
+        }
+
+        mFormatBarBinding.btnLink.setTag("");
     }
 
     @Override
     public void onPageLoaded() {
-        mEditor.setEditingEnabled(mComposeNoteViewModel.mEditingEnabled.get());
+        mEditor.setEditingEnabled(mComposeNoteViewModel.mFrameEnabled.get());
 
         if (mComposeType.equals(VIEW_NOTE)) {
             subscribeView();
@@ -240,11 +285,17 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
 
     @Override
     public void onTitleChanged(String title) {
+        if (mComposeNoteViewModel.mFrameEnabled.get()) {
+            mComposeNoteViewModel.mFrameEnabled.set(false);
+        }
         mComposeNoteViewModel.mNoteTitle.set(title);
     }
 
     @Override
     public void onContentChanged(String content) {
+        if (!mComposeNoteViewModel.mFrameEnabled.get()) {
+            mComposeNoteViewModel.mFrameEnabled.set(true);
+        }
         mComposeNoteViewModel.mNoteContent.set(content);
     }
 
@@ -329,5 +380,12 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
 
     private void toggleSave(boolean visibility) {
         mSaveItem.setVisible(visibility);
+    }
+
+    private void toggleEditing(boolean toggle) {
+        toggleSave(toggle);
+        mComposeNoteViewModel.mFabEnabled.set(!toggle);
+        mComposeNoteViewModel.mFrameEnabled.set(toggle);
+        mEditor.setEditingEnabled(toggle);
     }
 }

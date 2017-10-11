@@ -9,6 +9,7 @@ import android.arch.lifecycle.Transformations;
 import android.content.Context;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.mitash.quicknote.R;
@@ -25,6 +26,8 @@ import java.util.Date;
 
 public class ComposeNoteViewModel extends AndroidViewModel {
 
+    private static final String TAG = "ComposeNoteViewModel";
+
     private static final MutableLiveData ABSENT = new MutableLiveData();
 
     private final DatabaseCreator mDbCreator;
@@ -35,7 +38,17 @@ public class ComposeNoteViewModel extends AndroidViewModel {
 
     private final SingleLiveEvent<Void> mSaveNoteEvent = new SingleLiveEvent<>();
 
-    public final ObservableBoolean mEditingEnabled = new ObservableBoolean(false);
+    private final SingleLiveEvent<Void> mUpdateNoteEvent = new SingleLiveEvent<>();
+
+    private final SingleLiveEvent<Void> mEditNoteEvent = new SingleLiveEvent<>();
+
+    public final ObservableBoolean mFrameEnabled = new ObservableBoolean(false);
+
+    public final ObservableBoolean mFabEnabled = new ObservableBoolean(false);
+
+    public final ObservableBoolean mViewSubscribed = new ObservableBoolean(false);
+
+    public final ObservableField<NoteEntity> mNoteToUpdate = new ObservableField<>();
 
     private LiveData<NoteEntity> mObservableNote;
 
@@ -80,8 +93,20 @@ public class ComposeNoteViewModel extends AndroidViewModel {
         return mSaveNoteEvent;
     }
 
+    public SingleLiveEvent<Void> getUpdateNoteEvent() {
+        return mUpdateNoteEvent;
+    }
+
+    public SingleLiveEvent<Void> getEditNoteEvent() {
+        return mEditNoteEvent;
+    }
+
     public void callSaveEvent() {
         mSaveNoteEvent.call();
+    }
+
+    public void callUpdateEvent() {
+        mUpdateNoteEvent.call();
     }
 
     public void saveNote(Context context) {
@@ -89,21 +114,48 @@ public class ComposeNoteViewModel extends AndroidViewModel {
         String title = context.getString(R.string.text_untitled_note);
         if (null != mNoteTitle.get() && !mNoteTitle.get().equals("")) {
             title = HtmlUtils.htmlToText(mNoteTitle.get());
+        } else {
+            mNoteTitle.set(title);
         }
         note.setTitle(title);
         if (null != mNoteContent.get() && !mNoteContent.get().equals("")) {
             note.setNoteText(mNoteContent.get());
         } else {
-            Toast.makeText(context, "Can't save an empty note.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.text_error_empty_note, Toast.LENGTH_SHORT).show();
             return;
         }
         note.setCreatedDate(new Date());
         note.setUpdatedDate(new Date());
+
         if (null != mDbCreator.getDatabase()) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    mDbCreator.getDatabase().noteDao().insertAll(note);
+                    attach(mDbCreator.getDatabase().noteDao().insertAll(note).get(0).intValue());
+                }
+            }).start();
+        }
+    }
+
+    public void editNote() {
+        mEditNoteEvent.call();
+    }
+
+    public void updateNote() {
+        final NoteEntity noteEntity = mNoteToUpdate.get();
+        if (null != mNoteTitle.get() && !mNoteTitle.get().equals("")) {
+            noteEntity.setTitle(mNoteTitle.get());
+        }
+        if (null != mNoteContent.get() && !mNoteContent.get().equals("")) {
+            noteEntity.setNoteText(mNoteContent.get());
+        }
+        noteEntity.setUpdatedDate(new Date());
+
+        if (null != mDbCreator.getDatabase()) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mDbCreator.getDatabase().noteDao().updateAll(noteEntity);
                 }
             }).start();
         }

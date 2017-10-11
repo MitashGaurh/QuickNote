@@ -23,7 +23,7 @@ public interface NoteDao {
     LiveData<List<NoteEntity>> loadAllNotes();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(NoteEntity... notes);
+    List<Long> insertAll(NoteEntity... notes);
 
     @Update
     void updateAll(NoteEntity... notes);

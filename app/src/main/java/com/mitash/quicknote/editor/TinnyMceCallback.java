@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TinnyMceCallback {
+class TinnyMceCallback {
 
     private static final String TAG = "TinnyMceCallback:";
 

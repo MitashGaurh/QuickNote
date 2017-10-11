@@ -17,8 +17,8 @@ public class TimeUtils {
         return DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").print(timeInMills);
     }
 
-    public static String toTimeFormat(long timeInMills) {
-        return DateTimeFormat.forPattern("H:mm aa").print(timeInMills).replace("AM", "am").replace("PM", "pm");
+    private static String toTimeFormat(long timeInMills) {
+        return DateTimeFormat.forPattern("h:mm aa").print(timeInMills).replace("AM", "am").replace("PM", "pm");
     }
 
     public static String toDateFormat(long timeInMills) {

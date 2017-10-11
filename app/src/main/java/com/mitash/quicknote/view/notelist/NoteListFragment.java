@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class NoteListFragment extends LifecycleFragment implements View.OnClickListener, NoteActionListener {
+public class NoteListFragment extends LifecycleFragment implements NoteActionListener {
 
     private static final String TAG = "NoteListFragment";
 
@@ -43,6 +43,7 @@ public class NoteListFragment extends LifecycleFragment implements View.OnClickL
         return new NoteListFragment();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -103,8 +104,6 @@ public class NoteListFragment extends LifecycleFragment implements View.OnClickL
 
         mNoteListViewModel.mDataAvailable.set(true);
 
-        mBinding.fabAddNote.setOnClickListener(this);
-
         subscribeView();
     }
 
@@ -135,11 +134,6 @@ public class NoteListFragment extends LifecycleFragment implements View.OnClickL
                 }
             }
         });
-    }
-
-    @Override
-    public void onClick(View v) {
-        mNoteListViewModel.addNewNote();
     }
 
     @Override

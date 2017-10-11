@@ -20,12 +20,12 @@
 
 <body>
 <div id="title" style="outline: 0px solid transparent;" class="without-border field"
-     placeholderText="Title" contenteditable="true" onkeyup="onTitleChanged()"></div>
+     placeholderText="Title" contenteditable="true" onkeyup="onTitleChanged()" onfocus="onTitleChanged()"></div>
 
 <div contenteditable=false id=separatorDiv>
     <hr>
 </div>
-<div id="content" class="field" placeholderText="Content" onkeyup="onContentChanged()"></div>
+<div id="content" class="field" placeholderText="Content" onkeyup="onContentChanged()" onfocus="onContentChanged()"></div>
 <p id="dummyP" style="display:none;"></p>
 </body>
 
@@ -84,18 +84,21 @@
 
     function toggleBold() {
         tinyMCE.editors[0].formatter.toggle('bold');
+        onContentChanged();
         var currentState = tinyMCE.editors[0].formatter.match('bold');
         nativeCallbackHandler.onFormatChange(JSON.stringify({bold : currentState}));
     }
 
     function toggleBlockquote() {
         tinyMCE.editors[0].formatter.toggle('blockquote');
+        onContentChanged();
         var currentState = tinyMCE.editors[0].formatter.match('blockquote');
         nativeCallbackHandler.onFormatChange(JSON.stringify({blockquote:currentState}));
     }
 
     function toggleStrikeThrough() {
         tinyMCE.editors[0].formatter.toggle('strikethrough');
+        onContentChanged();
         var currentState = tinyMCE.editors[0].formatter.match('strikethrough');
         nativeCallbackHandler.onFormatChange(JSON.stringify({strikethrough:currentState}));
     }
@@ -123,6 +126,7 @@
         } else {
             tinyMCE.editors[0].formatter.apply('h1');
         }
+        onContentChanged();
         currentHeader = getCurrentHeader();
         nativeCallbackHandler.onFormatChange(JSON.stringify({header: currentHeader}));
     }
@@ -151,12 +155,14 @@
 
     function toggleItalic() {
         tinyMCE.editors[0].formatter.toggle('italic');
+        onContentChanged();
         var currentState = tinyMCE.editors[0].formatter.match('italic');
         nativeCallbackHandler.onFormatChange(JSON.stringify({italic: currentState}));
     }
 
     function toggleBulletList() {
         tinyMCE.editors[0].execCommand('InsertUnorderedList', false)
+        onContentChanged();
         var listState = getListState();
         listState = listState.toLowerCase() === 'ul';
         nativeCallbackHandler.onFormatChange(JSON.stringify({bullet: listState}));
@@ -164,6 +170,7 @@
 
     function toggleOrderedList() {
         tinyMCE.editors[0].execCommand('InsertOrderedList', false)
+        onContentChanged();
         var listState = getListState();
         listState = listState.toLowerCase() === 'ol';
         nativeCallbackHandler.onFormatChange(JSON.stringify({ordered: listState}));
@@ -187,19 +194,19 @@
 
     function enable() {
         document.addEventListener('selectionchange', selectionChangeHandler, false);
-        document.removeEventListener('click', clickHandeler, false);
+        document.removeEventListener('click', clickHandler, false);
         tinyMCE.editors[0].setMode('design');
         titleDiv.setAttribute("contenteditable", true);
     }
 
     function disable() {
         document.removeEventListener('selectionchange', selectionChangeHandler, false);
-        document.addEventListener('click', clickHandeler, false);
+        document.addEventListener('click', clickHandler, false);
         tinyMCE.editors[0].setMode('readonly');
         titleDiv.setAttribute('contenteditable', false);
     }
 
-    function clickHandeler(e) {
+    function clickHandler(e) {
         var target = e.target;
         if (target.tagName === 'A') {
             var link = target.getAttribute('href');
@@ -214,7 +221,7 @@
     }
 
     function selectionChangeHandler() {
-        var intrestFormats = ['bold',
+        var interestFormats = ['bold',
             'italic',
             'h1',
             'h2',
@@ -226,7 +233,7 @@
             'strikethrough',
             'link'
         ];
-        var result = tinyMCE.editors[0].formatter.matchAll(intrestFormats);
+        var result = tinyMCE.editors[0].formatter.matchAll(interestFormats);
         listState = getListState();
         if (listState) {
             result.push(listState);
