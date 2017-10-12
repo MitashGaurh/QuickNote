@@ -9,7 +9,6 @@ import android.arch.lifecycle.Transformations;
 import android.content.Context;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.mitash.quicknote.R;
@@ -76,7 +75,7 @@ public class ComposeNoteViewModel extends AndroidViewModel {
                             return ABSENT;
                         } else {
                             //noinspection ConstantConditions
-                            return mDbCreator.getDatabase().noteDao().loadNote(noteId);
+                            return mDbCreator.getDatabase().getNoteDao().loadNote(noteId);
                         }
                     }
                 });
@@ -131,7 +130,7 @@ public class ComposeNoteViewModel extends AndroidViewModel {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    attach(mDbCreator.getDatabase().noteDao().insertAll(note).get(0).intValue());
+                    attach(mDbCreator.getDatabase().getNoteDao().insertAll(note).get(0).intValue());
                 }
             }).start();
         }
@@ -155,7 +154,7 @@ public class ComposeNoteViewModel extends AndroidViewModel {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    mDbCreator.getDatabase().noteDao().updateAll(noteEntity);
+                    mDbCreator.getDatabase().getNoteDao().updateAll(noteEntity);
                 }
             }).start();
         }

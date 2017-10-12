@@ -58,7 +58,7 @@ public class NoteListViewModel extends AndroidViewModel {
                             return ABSENT;
                         } else {
                             //noinspection ConstantConditions
-                            return mDbCreator.getDatabase().noteDao().loadAllNotes();
+                            return mDbCreator.getDatabase().getNoteDao().loadAllNotes();
                         }
                     }
                 });

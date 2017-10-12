@@ -12,7 +12,7 @@
 
     </data>
 
-    <RelativeLayout
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.mitash.quicknote.view.notelist.NoteListFragment">
@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
             android:text="@string/text_create_note"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -36,12 +36,12 @@
             android:id="@+id/fab_add_note"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
+            android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
             android:onClick="@{() ->  viewModel.addNewNote()}"
             app:fabSize="normal"
+            app:layout_behavior="com.mitash.quicknote.view.widget.ScrollAwareFABBehavior"
             app:srcCompat="@drawable/ic_add" />
 
-    </RelativeLayout>
+    </android.support.design.widget.CoordinatorLayout>
 </layout>

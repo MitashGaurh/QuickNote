@@ -27,7 +27,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.SectionViewHol
 
     private NoteActionListener mNoteActionListener;
 
-    public NoteAdapter(List<NoteEntity> noteList) {
+    NoteAdapter(List<NoteEntity> noteList) {
         mNoteList = noteList;
     }
 
@@ -79,11 +79,25 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.SectionViewHol
         return calendar.get(Calendar.MONTH);
     }
 
-    public void setNoteActionListener(NoteActionListener actionListener) {
+    NoteEntity getNote(int position) {
+        return mNoteList.get(position);
+    }
+
+    void setNoteActionListener(NoteActionListener actionListener) {
         mNoteActionListener = checkNotNull(actionListener);
     }
 
-    public void swapNoteList(final List<NoteEntity> noteList) {
+    void removeItem(int position) {
+        mNoteList.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    void restoreItem(NoteEntity item, int position) {
+        mNoteList.add(position, item);
+        notifyItemInserted(position);
+    }
+
+    void swapNoteList(final List<NoteEntity> noteList) {
         if (null == mNoteList) {
             mNoteList = noteList;
             notifyItemRangeInserted(0, noteList.size());
@@ -120,9 +134,9 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.SectionViewHol
         }
     }
 
-    class SectionViewHolder extends RecyclerView.ViewHolder {
+    public class SectionViewHolder extends RecyclerView.ViewHolder {
 
-        final ItemNoteListBinding mItemNoteListBinding;
+        public final ItemNoteListBinding mItemNoteListBinding;
 
         SectionViewHolder(ItemNoteListBinding binding) {
             super(binding.getRoot());
@@ -136,7 +150,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.SectionViewHol
 
         final ItemNoteHeaderBinding mItemNoteHeaderBinding;
 
-        public HeaderViewHolder(ItemNoteHeaderBinding binding) {
+        HeaderViewHolder(ItemNoteHeaderBinding binding) {
             super(binding.getRoot());
             mItemNoteHeaderBinding = binding;
         }

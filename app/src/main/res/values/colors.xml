@@ -16,4 +16,6 @@
     <color name="colorDescText">#525e61</color>
     <color name="colorTitleText">#3b4446</color>
 
+    <color name="colorRed">#d03235</color>
+
 </resources>

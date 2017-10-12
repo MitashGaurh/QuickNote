@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class TimeUtils {
     public static final String TAG = "TimeUtils:";
@@ -33,15 +34,22 @@ public class TimeUtils {
         return DateTimeFormat.forPattern("MMMM yyyy").print(timeInMills);
     }
 
+    private static String toWeekFormat(long timeInMills) {
+        return DateTimeFormat.forPattern("EEEE").print(timeInMills);
+    }
+
     public static String toSlashFormat(long timeInMills) {
         Calendar noteTime = Calendar.getInstance();
         noteTime.setTimeInMillis(timeInMills);
 
         Calendar today = Calendar.getInstance();
 
+        int difference = today.get(Calendar.DATE) - noteTime.get(Calendar.DATE);
         if (today.get(Calendar.DATE) == noteTime.get(Calendar.DATE)) {
             return toTimeFormat(timeInMills);
-        } else if (today.get(Calendar.DATE) - noteTime.get(Calendar.DATE) == 1) {
+        } else if (difference <= 7 && difference > 1) {
+            return toWeekFormat(timeInMills);
+        } else if (difference == 1) {
             return "Yesterday";
         } else {
             return DateTimeFormat.forPattern("dd/MM/YY").print(timeInMills);

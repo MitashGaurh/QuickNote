@@ -12,33 +12,66 @@
             type="com.mitash.quicknote.model.Note" />
     </data>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/cardview_light_background"
-        android:onClick="@{() ->  listener.onNoteClicked(note)}"
-        android:orientation="vertical"
-        android:paddingEnd="@dimen/dimen_10_dp"
-        android:paddingStart="@dimen/dimen_10_dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_item_note_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_10_dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/colorTitleText"
-            app:htmlText="@{note.title}" />
+        <RelativeLayout
+            android:id="@+id/view_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorRed">
 
-        <TextView
-            android:id="@+id/tv_item_note_desc"
+            <ImageView
+                android:id="@+id/delete_icon"
+                android:layout_width="@dimen/dimen_30_dp"
+                android:layout_height="@dimen/dimen_30_dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/dimen_10_dp"
+                app:srcCompat="@drawable/ic_delete" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/dimen_10_dp"
+                android:layout_toStartOf="@id/delete_icon"
+                android:text="@string/text_delete"
+                android:textColor="@color/colorWhite"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/view_foreground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dimen_10_dp"
-            android:maxLines="3"
-            android:minLines="3"
-            app:content="@{note.noteText}"
-            app:dateText="@{note.updatedDate}" />
+            android:background="@color/cardview_light_background"
+            android:onClick="@{() ->  listener.onNoteClicked(note)}"
+            android:orientation="vertical"
+            android:paddingEnd="@dimen/dimen_10_dp"
+            android:paddingStart="@dimen/dimen_10_dp">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_item_note_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_10_dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorTitleText"
+                app:htmlText="@{note.title}" />
+
+            <TextView
+                android:id="@+id/tv_item_note_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_10_dp"
+                android:maxLines="3"
+                android:minLines="3"
+                app:content="@{note.noteText}"
+                app:dateText="@{note.updatedDate}" />
+
+        </LinearLayout>
+    </FrameLayout>
 </layout>
