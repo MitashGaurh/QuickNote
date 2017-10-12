@@ -1,4 +1,4 @@
-package com.mitash.quicknote.view.stickyheader;
+package com.mitash.quicknote.view.widget.stickyheader;
 
 public interface ItemVisibilityAdapter {
 

@@ -4,14 +4,15 @@ import android.app.Activity;
 import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.databinding.ObservableBoolean;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +22,10 @@ import com.mitash.quicknote.database.entity.NoteEntity;
 import com.mitash.quicknote.databinding.FragmentNoteListBinding;
 import com.mitash.quicknote.model.Note;
 import com.mitash.quicknote.utils.ActivityUtils;
-import com.mitash.quicknote.view.stickyheader.DividerDecoration;
-import com.mitash.quicknote.view.stickyheader.RecyclerItemTouchHelper;
-import com.mitash.quicknote.view.stickyheader.StickyHeadersDecoration;
-import com.mitash.quicknote.view.stickyheader.StickyHeadersTouchListener;
+import com.mitash.quicknote.view.widget.stickyheader.DividerDecoration;
+import com.mitash.quicknote.view.widget.stickyheader.RecyclerItemTouchHelper;
+import com.mitash.quicknote.view.widget.stickyheader.StickyHeadersDecoration;
+import com.mitash.quicknote.view.widget.stickyheader.StickyHeadersTouchListener;
 import com.mitash.quicknote.viewmodel.NoteListViewModel;
 
 import java.util.Collections;
@@ -52,6 +53,12 @@ public class NoteListFragment extends LifecycleFragment implements NoteActionLis
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mContext = activity;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -114,6 +121,7 @@ public class NoteListFragment extends LifecycleFragment implements NoteActionLis
         subscribeView();
     }
 
+
     private void subscribeView() {
         // Update the list when the data changes
         mNoteListViewModel.loadNotes().observe(this, new Observer<List<NoteEntity>>() {
@@ -141,6 +149,13 @@ public class NoteListFragment extends LifecycleFragment implements NoteActionLis
                 }
             }
         });
+
+        mNoteListViewModel.getDeleteNoteEvent().observe(this, new Observer<NoteEntity>() {
+            @Override
+            public void onChanged(@Nullable NoteEntity noteEntity) {
+                mNoteListViewModel.deleteNote(noteEntity);
+            }
+        });
     }
 
     @Override
@@ -161,15 +176,24 @@ public class NoteListFragment extends LifecycleFragment implements NoteActionLis
             // remove the item from recycler view
             mNoteAdapter.removeItem(viewHolder.getAdapterPosition());
 
+            final ObservableBoolean isUndoSelected = new ObservableBoolean(false);
+
             // showing snack bar with Undo option
-            Snackbar.make(mBinding.fabAddNote, name + getString(R.string.text_note_deleted), Snackbar.LENGTH_LONG)
-                    .setAction(R.string.text_undo, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            // undo is selected, restore the deleted item
-                            mNoteAdapter.restoreItem(deletedItem, deletedIndex);
-                        }
-                    }).setActionTextColor(Color.YELLOW).show();
+            Snackbar.make(mBinding.fabAddNote, name + " " + getString(R.string.text_note_deleted), Snackbar.LENGTH_LONG).addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    if (!isUndoSelected.get()) {
+                        mNoteListViewModel.callDeleteEvent(deletedItem);
+                    }
+                }
+            }).setAction(R.string.text_undo, new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // undo is selected, restore the deleted item
+                    mNoteAdapter.restoreItem(deletedItem, deletedIndex);
+                    isUndoSelected.set(true);
+                }
+            }).setActionTextColor(Color.YELLOW).show();
         }
     }
 }

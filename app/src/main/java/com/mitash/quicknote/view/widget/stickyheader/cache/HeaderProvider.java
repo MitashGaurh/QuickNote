@@ -1,4 +1,4 @@
-package com.mitash.quicknote.view.stickyheader.cache;
+package com.mitash.quicknote.view.widget.stickyheader.cache;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

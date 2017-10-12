@@ -16,7 +16,7 @@ import com.mitash.quicknote.view.widget.ToggleImageButton;
  * Created by Mitash Gaurh on 9/19/2017.
  */
 
-public class DialogUtils {
+public final class DialogUtils {
 
     /**
      * @param btnLink link button in the editor

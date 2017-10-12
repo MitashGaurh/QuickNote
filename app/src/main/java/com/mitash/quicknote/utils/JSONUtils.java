@@ -3,7 +3,7 @@ package com.mitash.quicknote.utils;
 
 import org.json.JSONObject;
 
-public class JSONUtils {
+public final class JSONUtils {
 
     private static final String JSON_NULL_STR = "null";
 

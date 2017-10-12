@@ -6,11 +6,13 @@
 
     <color name="colorShimmer">#16000000</color>
 
+    <color name="colorAlphaBlack">#50000000</color>
+
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorStatusLight">#E0E0E0</color>
 
-    <color name="colorPrimaryText">#de000000</color>
-    <color name="colorHintText">#61000000</color>
+    <color name="colorPrimaryText">#212121</color>
+    <color name="colorHintText">#727272</color>
 
     <color name="colorHeaderText">#7b868a</color>
     <color name="colorDescText">#525e61</color>

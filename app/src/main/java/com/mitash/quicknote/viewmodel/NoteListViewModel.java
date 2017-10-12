@@ -30,6 +30,8 @@ public class NoteListViewModel extends AndroidViewModel {
 
     private final SingleLiveEvent<Integer> mViewNoteEvent = new SingleLiveEvent<>();
 
+    private final SingleLiveEvent<NoteEntity> mDeleteNoteEvent = new SingleLiveEvent<>();
+
     private final DatabaseCreator mDbCreator;
 
     private LiveData<List<NoteEntity>> mObservableNotes;
@@ -79,7 +81,26 @@ public class NoteListViewModel extends AndroidViewModel {
         return mViewNoteEvent;
     }
 
+    public SingleLiveEvent<NoteEntity> getDeleteNoteEvent() {
+        return mDeleteNoteEvent;
+    }
+
     public void addNewNote() {
         mNewNoteEvent.call();
+    }
+
+    public void callDeleteEvent(NoteEntity deletedItem) {
+        mDeleteNoteEvent.setValue(deletedItem);
+    }
+
+    public void deleteNote(final NoteEntity noteEntity) {
+        if (null != mDbCreator.getDatabase()) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mDbCreator.getDatabase().getNoteDao().deleteAll(noteEntity);
+                }
+            }).start();
+        }
     }
 }

@@ -15,5 +15,6 @@
     <string name="text_error_empty_note">Can\'t save an empty note.</string>
     <string name="text_delete">Delete</string>
     <string name="text_undo">UNDO</string>
-    <string name="text_note_deleted"> deleted.</string>
+    <string name="text_note_deleted">deleted.</string>
+    <string name="text_search">Search</string>
 </resources>

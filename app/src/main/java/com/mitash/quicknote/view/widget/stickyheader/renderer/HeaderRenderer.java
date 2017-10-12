@@ -1,4 +1,4 @@
-package com.mitash.quicknote.view.stickyheader.renderer;
+package com.mitash.quicknote.view.widget.stickyheader.renderer;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -6,8 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.mitash.quicknote.view.stickyheader.util.OrientationProvider;
-import com.mitash.quicknote.view.stickyheader.calculation.DimensionCalculator;
+import com.mitash.quicknote.view.widget.stickyheader.util.OrientationProvider;
+import com.mitash.quicknote.view.widget.stickyheader.calculation.DimensionCalculator;
 
 
 /**

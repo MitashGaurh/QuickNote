@@ -15,7 +15,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * This provides methods to help Activities load their UI.
  */
-public class ActivityUtils {
+public final class ActivityUtils {
 
     /**
      * The {@code fragment} is added to the container view with id {@code frameId}. The operation is

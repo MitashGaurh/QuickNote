@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.mitash.quicknote.database.entity.NoteEntity;
 import com.mitash.quicknote.databinding.ItemNoteHeaderBinding;
 import com.mitash.quicknote.databinding.ItemNoteListBinding;
-import com.mitash.quicknote.view.stickyheader.StickyHeadersAdapter;
+import com.mitash.quicknote.view.widget.stickyheader.StickyHeadersAdapter;
 
 import java.util.Calendar;
 import java.util.List;

@@ -2,7 +2,6 @@ package com.mitash.quicknote.view;
 
 import android.databinding.BindingAdapter;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -13,7 +12,7 @@ import android.widget.TextView;
 import com.mitash.quicknote.database.converter.DateConverter;
 import com.mitash.quicknote.utils.HtmlUtils;
 import com.mitash.quicknote.utils.TimeUtils;
-import com.mitash.quicknote.view.shimmer.ShimmerRecyclerView;
+import com.mitash.quicknote.view.widget.shimmer.ShimmerRecyclerView;
 
 import java.util.Date;
 

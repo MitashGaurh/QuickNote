@@ -1,4 +1,4 @@
-package com.mitash.quicknote.view.stickyheader;
+package com.mitash.quicknote.view.widget.stickyheader;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -7,13 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
 
-import com.mitash.quicknote.view.stickyheader.cache.HeaderProvider;
-import com.mitash.quicknote.view.stickyheader.cache.HeaderViewCache;
-import com.mitash.quicknote.view.stickyheader.calculation.DimensionCalculator;
-import com.mitash.quicknote.view.stickyheader.calculation.HeaderPositionCalculator;
-import com.mitash.quicknote.view.stickyheader.renderer.HeaderRenderer;
-import com.mitash.quicknote.view.stickyheader.util.LinearLayoutOrientationProvider;
-import com.mitash.quicknote.view.stickyheader.util.OrientationProvider;
+import com.mitash.quicknote.view.widget.stickyheader.cache.HeaderProvider;
+import com.mitash.quicknote.view.widget.stickyheader.cache.HeaderViewCache;
+import com.mitash.quicknote.view.widget.stickyheader.calculation.DimensionCalculator;
+import com.mitash.quicknote.view.widget.stickyheader.calculation.HeaderPositionCalculator;
+import com.mitash.quicknote.view.widget.stickyheader.renderer.HeaderRenderer;
+import com.mitash.quicknote.view.widget.stickyheader.util.LinearLayoutOrientationProvider;
+import com.mitash.quicknote.view.widget.stickyheader.util.OrientationProvider;
 
 public class StickyHeadersDecoration extends RecyclerView.ItemDecoration {
 

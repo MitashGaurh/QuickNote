@@ -1,4 +1,4 @@
-package com.mitash.quicknote.view.shimmer;
+package com.mitash.quicknote.view.widget.shimmer;
 
 import android.content.Context;
 import android.content.res.TypedArray;

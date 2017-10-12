@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_search"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="invisible">
+
+    <View
+        android:id="@+id/view_transparent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAlphaBlack"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/search_top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/white">
+
+            <EditText
+                android:id="@+id/et_search_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:hint="@string/text_search"
+                android:imeOptions="actionSearch"
+                android:inputType="textNoSuggestions"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/dimen_60_dp"
+                android:paddingRight="@dimen/dimen_60_dp"
+                android:textColor="@color/colorPrimaryText"
+                android:textColorHint="@color/colorHintText"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/btn_action_up"
+                style="@style/AppTheme.ImageButton"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_arrow_back" />
+
+            <ImageButton
+                android:id="@+id/btn_action_voice"
+                style="@style/AppTheme.ImageButton"
+                android:layout_alignParentEnd="true"
+                app:srcCompat="@drawable/ic_keyboard_voice" />
+
+            <ImageButton
+                android:id="@+id/btn_action_empty"
+                style="@style/AppTheme.ImageButton"
+                android:layout_alignParentEnd="true"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_close" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorWhite"
+                android:backgroundTint="#10000000"
+                tools:targetApi="lollipop" />
+        </RelativeLayout>
+
+
+        <ListView
+            android:id="@+id/list_suggestion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:divider="@android:color/transparent" />
+    </LinearLayout>
+
+</FrameLayout>

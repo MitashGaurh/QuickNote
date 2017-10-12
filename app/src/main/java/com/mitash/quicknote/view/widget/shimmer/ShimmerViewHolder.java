@@ -1,4 +1,4 @@
-package com.mitash.quicknote.view.shimmer;
+package com.mitash.quicknote.view.widget.shimmer;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

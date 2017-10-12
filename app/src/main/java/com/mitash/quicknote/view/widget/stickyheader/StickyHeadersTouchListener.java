@@ -1,4 +1,4 @@
-package com.mitash.quicknote.view.stickyheader;
+package com.mitash.quicknote.view.widget.stickyheader;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;

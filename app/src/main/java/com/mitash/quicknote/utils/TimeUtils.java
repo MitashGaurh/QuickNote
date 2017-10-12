@@ -7,7 +7,7 @@ import org.joda.time.format.DateTimeFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class TimeUtils {
+public final class TimeUtils {
     public static final String TAG = "TimeUtils:";
 
     public static long toTimestamp(String serverTime) {

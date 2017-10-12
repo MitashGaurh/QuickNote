@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_suggestion"
+    android:layout_width="wrap_content"
+    android:layout_height="?attr/actionBarSize"
+    android:drawablePadding="@dimen/dimen_30_dp"
+    android:drawableStart="@drawable/ic_info"
+    android:focusable="false"
+    android:paddingEnd="@dimen/dimen_12_dp"
+    android:paddingStart="@dimen/dimen_12_dp"
+    android:textColor="@color/colorHintText"
+    android:textSize="16sp" />

@@ -1,4 +1,4 @@
-package com.mitash.quicknote.view.stickyheader.cache;
+package com.mitash.quicknote.view.widget.stickyheader.cache;
 
 import android.support.v4.util.LongSparseArray;
 import android.support.v7.widget.LinearLayoutManager;
@@ -6,8 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.mitash.quicknote.view.stickyheader.util.OrientationProvider;
-import com.mitash.quicknote.view.stickyheader.StickyHeadersAdapter;
+import com.mitash.quicknote.view.widget.stickyheader.util.OrientationProvider;
+import com.mitash.quicknote.view.widget.stickyheader.StickyHeadersAdapter;
 
 /**
  * An implementation of {@link HeaderProvider} that creates and caches header views

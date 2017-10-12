@@ -1,4 +1,4 @@
-package com.mitash.quicknote.view.stickyheader.calculation;
+package com.mitash.quicknote.view.widget.stickyheader.calculation;
 
 import android.graphics.Rect;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,9 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.mitash.quicknote.view.stickyheader.cache.HeaderProvider;
-import com.mitash.quicknote.view.stickyheader.util.OrientationProvider;
-import com.mitash.quicknote.view.stickyheader.StickyHeadersAdapter;
+import com.mitash.quicknote.view.widget.stickyheader.cache.HeaderProvider;
+import com.mitash.quicknote.view.widget.stickyheader.util.OrientationProvider;
+import com.mitash.quicknote.view.widget.stickyheader.StickyHeadersAdapter;
 
 
 /**

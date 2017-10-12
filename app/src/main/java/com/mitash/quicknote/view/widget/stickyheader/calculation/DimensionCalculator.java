@@ -1,4 +1,4 @@
-package com.mitash.quicknote.view.stickyheader.calculation;
+package com.mitash.quicknote.view.widget.stickyheader.calculation;
 
 import android.graphics.Rect;
 import android.view.View;

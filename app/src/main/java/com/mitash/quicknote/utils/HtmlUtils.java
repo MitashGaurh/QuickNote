@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-public class HtmlUtils {
+public final class HtmlUtils {
 
     public static String escapeHtml(String html) {
         if (html != null) {

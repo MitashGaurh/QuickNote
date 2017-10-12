@@ -1,9 +1,7 @@
-package com.mitash.quicknote.view.stickyheader.util;
+package com.mitash.quicknote.view.widget.stickyheader.util;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
-import com.mitash.quicknote.view.stickyheader.util.OrientationProvider;
 
 /**
  * OrientationProvider for RecyclerViews who use a LinearLayoutManager
