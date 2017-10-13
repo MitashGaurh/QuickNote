@@ -4,7 +4,6 @@ import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
@@ -57,27 +56,27 @@ public class NoteListActivity extends LifeCycleAppCompatActivity {
         mSearchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Snackbar.make(findViewById(R.id.frame_container), "Query: " + query, Snackbar.LENGTH_LONG)
-                        .show();
-                return false;
+                mNoteListViewModel.callFilterEvent(query);
+                return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //Do some magic
+                mNoteListViewModel.callFilterEvent(newText);
                 return false;
             }
         });
 
+
         mSearchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
             @Override
             public void onSearchViewShown() {
-                //Do some magic
+
             }
 
             @Override
             public void onSearchViewClosed() {
-                //Do some magic
+                mNoteListViewModel.callFilterEvent("");
             }
         });
     }

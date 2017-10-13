@@ -22,7 +22,6 @@
         <activity
             android:name=".view.composenote.ComposeNoteActivity"
             android:label="@string/title_activity_compose_note"
-            android:parentActivityName=".view.notelist.NoteListActivity"
             android:theme="@style/ComposeTheme" />
     </application>
 

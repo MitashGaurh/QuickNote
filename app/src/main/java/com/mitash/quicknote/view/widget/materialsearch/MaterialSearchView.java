@@ -231,7 +231,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
     }
 
     private void startFilter(CharSequence s) {
-        if (mAdapter != null && mAdapter instanceof Filterable) {
+        if ((mAdapter != null) && (mAdapter instanceof Filterable)) {
             ((Filterable) mAdapter).getFilter().filter(s, MaterialSearchView.this);
         }
     }
@@ -267,9 +267,10 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
         CharSequence query = mEtSearchView.getText();
         if (query != null && TextUtils.getTrimmedLength(query) > 0) {
             if (null == mOnQueryChangeListener || !mOnQueryChangeListener.onQueryTextSubmit(query.toString())) {
-                closeSearch(false);
+                closeSearch(true);
                 mEtSearchView.setText(null);
             }
+            AppUtils.hideKeyboard(mEtSearchView);
         }
     }
 

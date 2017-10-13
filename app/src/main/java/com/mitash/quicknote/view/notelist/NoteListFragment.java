@@ -118,11 +118,18 @@ public class NoteListFragment extends LifecycleFragment implements NoteActionLis
 
         mNoteListViewModel.mDataAvailable.set(true);
 
-        subscribeView();
+        subscribeViewEvents();
     }
 
+    @Override
+    public void onPause() {
+        if (!mNoteListViewModel.mDeleteNoteList.isEmpty()) {
+            mNoteListViewModel.callDeleteEvent();
+        }
+        super.onPause();
+    }
 
-    private void subscribeView() {
+    private void subscribeViewEvents() {
         // Update the list when the data changes
         mNoteListViewModel.loadNotes().observe(this, new Observer<List<NoteEntity>>() {
             @Override
@@ -150,10 +157,17 @@ public class NoteListFragment extends LifecycleFragment implements NoteActionLis
             }
         });
 
-        mNoteListViewModel.getDeleteNoteEvent().observe(this, new Observer<NoteEntity>() {
+        mNoteListViewModel.getDeleteNoteEvent().observe(this, new Observer<List<NoteEntity>>() {
             @Override
-            public void onChanged(@Nullable NoteEntity noteEntity) {
-                mNoteListViewModel.deleteNote(noteEntity);
+            public void onChanged(@Nullable List<NoteEntity> noteEntities) {
+                mNoteListViewModel.deleteNote(noteEntities);
+            }
+        });
+
+        mNoteListViewModel.getFilterNoteEvent().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String query) {
+                mNoteAdapter.getFilter().filter(query);
             }
         });
     }
@@ -179,21 +193,25 @@ public class NoteListFragment extends LifecycleFragment implements NoteActionLis
             final ObservableBoolean isUndoSelected = new ObservableBoolean(false);
 
             // showing snack bar with Undo option
-            Snackbar.make(mBinding.fabAddNote, name + " " + getString(R.string.text_note_deleted), Snackbar.LENGTH_LONG).addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                @Override
-                public void onDismissed(Snackbar transientBottomBar, int event) {
-                    if (!isUndoSelected.get()) {
-                        mNoteListViewModel.callDeleteEvent(deletedItem);
-                    }
-                }
-            }).setAction(R.string.text_undo, new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // undo is selected, restore the deleted item
-                    mNoteAdapter.restoreItem(deletedItem, deletedIndex);
-                    isUndoSelected.set(true);
-                }
-            }).setActionTextColor(Color.YELLOW).show();
+            Snackbar.make(mBinding.fabAddNote
+                    , name + " " + getString(R.string.text_note_deleted)
+                    , Snackbar.LENGTH_LONG)
+                    .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                        @Override
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                            if (!isUndoSelected.get()) {
+                                mNoteListViewModel.mDeleteNoteList.add(deletedItem);
+                            }
+                        }
+                    })
+                    .setAction(R.string.text_undo, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // undo is selected, restore the deleted item
+                            mNoteAdapter.restoreItem(deletedItem, deletedIndex);
+                            isUndoSelected.set(true);
+                        }
+                    }).setActionTextColor(Color.YELLOW).show();
         }
     }
 }

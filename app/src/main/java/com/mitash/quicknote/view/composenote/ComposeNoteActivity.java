@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.mitash.quicknote.LifeCycleAppCompatActivity;
 import com.mitash.quicknote.R;
@@ -31,7 +32,6 @@ public class ComposeNoteActivity extends LifeCycleAppCompatActivity {
         if (null != getSupportActionBar()) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back);
-            upArrow.setColorFilter(ContextCompat.getColor(this, R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }

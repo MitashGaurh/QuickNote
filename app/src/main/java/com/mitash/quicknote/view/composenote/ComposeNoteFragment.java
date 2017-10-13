@@ -117,6 +117,9 @@ public class ComposeNoteFragment extends LifecycleFragment implements Editor.Edi
                 }
                 toggleEditing(false);
                 break;
+
+            default:
+                getActivity().onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }

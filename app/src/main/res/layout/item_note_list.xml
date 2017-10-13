@@ -48,6 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/cardview_light_background"
+            android:foreground="?attr/selectableItemBackground"
             android:onClick="@{() ->  listener.onNoteClicked(note)}"
             android:orientation="vertical"
             android:paddingEnd="@dimen/dimen_10_dp"

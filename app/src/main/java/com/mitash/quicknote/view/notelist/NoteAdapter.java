@@ -5,12 +5,15 @@ import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import com.mitash.quicknote.database.entity.NoteEntity;
 import com.mitash.quicknote.databinding.ItemNoteHeaderBinding;
 import com.mitash.quicknote.databinding.ItemNoteListBinding;
 import com.mitash.quicknote.view.widget.stickyheader.StickyHeadersAdapter;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -21,14 +24,17 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Created by Mitash Gaurh on 9/7/2017.
  */
 
-public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.SectionViewHolder> implements StickyHeadersAdapter<NoteAdapter.HeaderViewHolder> {
+public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.SectionViewHolder> implements StickyHeadersAdapter<NoteAdapter.HeaderViewHolder>, Filterable {
 
     private List<NoteEntity> mNoteList;
+
+    private List<NoteEntity> mFilteredList;
 
     private NoteActionListener mNoteActionListener;
 
     NoteAdapter(List<NoteEntity> noteList) {
         mNoteList = noteList;
+        mFilteredList = noteList;
     }
 
     @Override
@@ -100,6 +106,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.SectionViewHol
     void swapNoteList(final List<NoteEntity> noteList) {
         if (null == mNoteList) {
             mNoteList = noteList;
+            mFilteredList = noteList;
             notifyItemRangeInserted(0, noteList.size());
         } else {
             DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
@@ -130,8 +137,51 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.SectionViewHol
                 }
             });
             mNoteList = noteList;
+            mFilteredList = noteList;
             result.dispatchUpdatesTo(this);
         }
+    }
+
+    @Override
+    public Filter getFilter() {
+
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+
+                String charString = charSequence.toString();
+
+                if (charString.isEmpty()) {
+
+                    mNoteList = mFilteredList;
+                } else {
+
+                    ArrayList<NoteEntity> filteredList = new ArrayList<>();
+
+                    for (NoteEntity noteEntity : mFilteredList) {
+
+                        if (noteEntity.getTitle().toLowerCase().contains(charString.toLowerCase())
+                                || noteEntity.getNoteText().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(noteEntity);
+                        }
+                    }
+
+                    mNoteList = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = mNoteList;
+                return filterResults;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                mNoteList = (ArrayList<NoteEntity>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
+
     }
 
     public class SectionViewHolder extends RecyclerView.ViewHolder {
