@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.arch.lifecycle.LifecycleFragment;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
-import android.databinding.ObservableBoolean;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -121,14 +120,6 @@ public class NoteListFragment extends LifecycleFragment implements NoteActionLis
         subscribeViewEvents();
     }
 
-    @Override
-    public void onPause() {
-        if (!mNoteListViewModel.mDeleteNoteList.isEmpty()) {
-            mNoteListViewModel.callDeleteEvent();
-        }
-        super.onPause();
-    }
-
     private void subscribeViewEvents() {
         // Update the list when the data changes
         mNoteListViewModel.loadNotes().observe(this, new Observer<List<NoteEntity>>() {
@@ -157,10 +148,10 @@ public class NoteListFragment extends LifecycleFragment implements NoteActionLis
             }
         });
 
-        mNoteListViewModel.getDeleteNoteEvent().observe(this, new Observer<List<NoteEntity>>() {
+        mNoteListViewModel.getDeleteNoteEvent().observe(this, new Observer<NoteEntity>() {
             @Override
-            public void onChanged(@Nullable List<NoteEntity> noteEntities) {
-                mNoteListViewModel.deleteNote(noteEntities);
+            public void onChanged(@Nullable NoteEntity noteEntity) {
+                mNoteListViewModel.deleteNote(noteEntity);
             }
         });
 
@@ -190,8 +181,6 @@ public class NoteListFragment extends LifecycleFragment implements NoteActionLis
             // remove the item from recycler view
             mNoteAdapter.removeItem(viewHolder.getAdapterPosition());
 
-            final ObservableBoolean isUndoSelected = new ObservableBoolean(false);
-
             // showing snack bar with Undo option
             Snackbar.make(mBinding.fabAddNote
                     , name + " " + getString(R.string.text_note_deleted)
@@ -199,8 +188,13 @@ public class NoteListFragment extends LifecycleFragment implements NoteActionLis
                     .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                         @Override
                         public void onDismissed(Snackbar transientBottomBar, int event) {
-                            if (!isUndoSelected.get()) {
-                                mNoteListViewModel.mDeleteNoteList.add(deletedItem);
+
+                            switch (event) {
+                                case DISMISS_EVENT_SWIPE:
+                                case DISMISS_EVENT_TIMEOUT:
+                                case DISMISS_EVENT_CONSECUTIVE:
+                                    mNoteListViewModel.callDeleteEvent(deletedItem);
+                                    break;
                             }
                         }
                     })
@@ -209,7 +203,6 @@ public class NoteListFragment extends LifecycleFragment implements NoteActionLis
                         public void onClick(View view) {
                             // undo is selected, restore the deleted item
                             mNoteAdapter.restoreItem(deletedItem, deletedIndex);
-                            isUndoSelected.set(true);
                         }
                     }).setActionTextColor(Color.YELLOW).show();
         }

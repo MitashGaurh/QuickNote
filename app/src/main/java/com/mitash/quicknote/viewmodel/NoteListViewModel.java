@@ -30,15 +30,13 @@ public class NoteListViewModel extends AndroidViewModel {
 
     public final ObservableBoolean mDataAvailable = new ObservableBoolean(false);
 
-    public final ObservableList<NoteEntity> mDeleteNoteList = new ObservableArrayList<>();
-
     private final SingleLiveEvent<Void> mNewNoteEvent = new SingleLiveEvent<>();
 
     private final SingleLiveEvent<Integer> mViewNoteEvent = new SingleLiveEvent<>();
 
     private final SingleLiveEvent<String> mFilterNoteEvent = new SingleLiveEvent<>();
 
-    private final SingleLiveEvent<List<NoteEntity>> mDeleteNoteEvent = new SingleLiveEvent<>();
+    private final SingleLiveEvent<NoteEntity> mDeleteNoteEvent = new SingleLiveEvent<>();
 
     private final DatabaseCreator mDbCreator;
 
@@ -93,7 +91,7 @@ public class NoteListViewModel extends AndroidViewModel {
         return mFilterNoteEvent;
     }
 
-    public SingleLiveEvent<List<NoteEntity>> getDeleteNoteEvent() {
+    public SingleLiveEvent<NoteEntity> getDeleteNoteEvent() {
         return mDeleteNoteEvent;
     }
 
@@ -101,21 +99,20 @@ public class NoteListViewModel extends AndroidViewModel {
         mNewNoteEvent.call();
     }
 
-    public void callDeleteEvent() {
-        mDeleteNoteEvent.setValue(mDeleteNoteList);
+    public void callDeleteEvent(NoteEntity noteEntity) {
+        mDeleteNoteEvent.setValue(noteEntity);
     }
 
     public void callFilterEvent(String query) {
         mFilterNoteEvent.setValue(query);
     }
 
-    public void deleteNote(final List<NoteEntity> noteEntities) {
+    public void deleteNote(final NoteEntity noteEntity) {
         if (null != mDbCreator.getDatabase()) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    NoteEntity[] noteArray = new NoteEntity[noteEntities.size()];
-                    mDbCreator.getDatabase().getNoteDao().deleteAll(noteEntities.toArray(noteArray));
+                    mDbCreator.getDatabase().getNoteDao().deleteAll(noteEntity);
                 }
             }).start();
         }
