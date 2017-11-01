@@ -129,7 +129,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.SectionViewHol
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
                     NoteEntity noteEntity = noteList.get(newItemPosition);
-                    NoteEntity old = noteList.get(oldItemPosition);
+                    NoteEntity old = mNoteList.get(oldItemPosition);
                     return noteEntity.getId() == old.getId()
                             && Objects.equals(noteEntity.getTitle(), old.getTitle())
                             && Objects.equals(noteEntity.getNoteText(), old.getNoteText())

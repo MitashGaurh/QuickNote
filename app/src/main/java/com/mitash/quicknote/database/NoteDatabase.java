@@ -22,7 +22,7 @@ public abstract class NoteDatabase extends RoomDatabase {
 
     private static NoteDatabase INSTANCE;
 
-    public static NoteDatabase getAppDatabase(Context context) {
+    static NoteDatabase getAppDatabase(Context context) {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(
                     context.getApplicationContext()
